@@ -7,6 +7,9 @@
 Пока можно скачать и попробовать версию с игрового джема.
 https://meownsk.itch.io/nose-simulator
 
+## панорама геометрии уровня
+<iframe width="100%" height="640" style="width: 100%; height: 640px; border: none; max-width: 100%;" frameborder="0" allowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer" scrolling="no" src="https://kuula.co/share/7yMVY?fs=1&vr=1&sd=1&thumbs=1&info=1&logo=1"></iframe>
+
 ## История 
 Это такое VR приложение, которое мы с ребятами сделали на игровой джем Ludum Dare 45(на площадке Sibgamejam)
 
@@ -27,7 +30,7 @@ https://twitch.tv/eggnot
 https://youtube.com/playlist?list=PL8XRkIoiq4N4uyFeX9ZKoNGOn2ivex27C
 
 Я планирую следующие этапы
-+ Моделирование интерьера, мебели, основной посуды и предметов быта 60х
++ ~~Моделирование интерьера, мебели, основной посуды и предметов быта 60х~~
 + простейшее текстурирование
 + гибкий нос и физика на объектах
 + текстурирование разрушаемых объектов
