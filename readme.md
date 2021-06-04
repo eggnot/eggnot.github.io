@@ -10,25 +10,33 @@
 
 В художественной деятельности предпочитает междисциплинарные коллаборации и экспериментальные проекты.
 
-## проекты
-[Симулятор Носа](nose_simulator)
+## последние проекты
+[DSF](dsf) |
+[Симулятор Носа](nose_simulator) |
+[B.A.U](bau) |
+[Empathy Horn](empathy_horn) |
+
+## разное
+[киберублюдки](cyberbastards) |
+[гараж грищенко](garage) |
+[музыкальная арка](music_arch) |
+[остановка лес](bus_stop) |
+[радио ядерного резонанса](nuclear_radio) |
 
 <iframe style="float: right; clear: left;"
     src="https://player.twitch.tv?channel=eggnot&parent=eggnot.com&parent=eggnot.github.com"
     scrolling="no" frameborder="0" allow="autoplay; fullscreen"
-    width="400" height="300">
+    width="300" height="200">
 </iframe>
 
-## соцсети
-
-[instagram](https://www.instagram.com/eggnot1/), 
-[twitter](https://twitter.com/eggnot4), 
-[vimeo](https://vimeo.com/eggnot), 
-[thingiverse](https://www.thingiverse.com/eggnot), 
-[facebook](https://www.facebook.com/eggnot1), 
-[youtube](https://www.youtube.com/channelUCK0ev2LGNSdGau6gKvJhqIw), 
-[вконтач](https://vk.com/eggnot), 
-[художественная_техника](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A), 
+## соцсети 
+[instagram](https://www.instagram.com/eggnot1/) |
+[twitter](https://twitter.com/eggnot4) |
+[vimeo](https://vimeo.com/eggnot) |
+[thingiverse](https://www.thingiverse.com/eggnot) |
+[facebook](https://www.facebook.com/eggnot1) |
+[youtube](https://www.youtube.com/channelUCK0ev2LGNSdGau6gKvJhqIw) |
+[вконтач](https://vk.com/eggnot) | [художественная_техника](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A) |
 [архив:киностудия](http://thekinostudio.blogspot.ru/)
 
 
@@ -39,7 +47,7 @@
 * Первая гаражная выставка, - Новосибирск, 2015. Гараж, “скиф”, 116
 ### коллективные
 * “Грац-Москва”, ГЦСИ, Москва, 2005
-* “Марсово поле”, ЦСИ М’АРС, Москва, 2006
+* “Марсово поле”, ЦСИ М’АРС, Москва, 2006 ( http://www.gif.ru/afisha/mars-pole/ )
 * “... я художник”, White Cube Gallery Новосибирск, 2009
 * “Эффект путешествия”, СТУДИЯ109, Новосибирск, 2011
 * «U:Напряжение», фестиваль экспериментальной поэзии EXPERIENCES, СЦСИ, Новосибирск, 2011
