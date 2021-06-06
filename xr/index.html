@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>xr index</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+
+	<body>
+		<div id="info">
+			<a href="../">back to flat web</a> on eggnot.com
+		</div>
+
+		<script type="module">
+
+			import * as THREE from './threejs/build/three.module.js';
+
+			import { OrbitControls } from './threejs/examples/jsm/controls/OrbitControls.js';
+
+			import { GLTFLoader } from './threejs/examples/jsm/loaders/GLTFLoader.js';
+
+			import { EXRLoader } from './threejs/examples/jsm/loaders/EXRLoader.js';
+			import { Water } from './threejs/examples/jsm/objects/Water.js';
+
+
+			import { VRButton } from './threejs/examples/jsm/webxr/VRButton.js';
+
+			let camera, scene, renderer;
+
+			let water;
+
+			let exrCubeRenderTarget, exrBackground;
+
+			let clock = new THREE.Clock();
+
+			let isvr_prev = false;
+
+			init();
+			animate();
+
+			function init() {
+				//
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				//!
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				renderer.toneMappingExposure = 1;
+
+				renderer.outputEncoding = THREE.sRGBEncoding;
+				renderer.xr.enabled = true;
+				
+				//
+				scene = new THREE.Scene();
+
+
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 200 );
+				camera.position.set( 0, 2, 15 );
+				
+				/*
+				const helper = new THREE.GridHelper(10,10);
+				helper.rotation.x = Math.PI / 2;
+				helper.rotateX(1.5708);
+				scene.add( helper );
+				*/
+
+				/*
+				const light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 12, 5, 1 ).normalize();
+				scene.add( light );
+				*/
+				
+				const ambientLight = new THREE.AmbientLight( 0xeeeeee, 0.5 );
+				scene.add( ambientLight );
+				
+				//
+
+				new EXRLoader()
+					.setDataType( THREE.UnsignedByteType )
+					.load( 'skver_hi_edit1/env.exr', function ( texture ) {
+
+						exrCubeRenderTarget = pmremGenerator.fromEquirectangular( texture );
+						exrBackground = exrCubeRenderTarget.texture;
+
+						texture.dispose();
+
+					} );				
+
+
+				const loader = new GLTFLoader().setPath( 'skver_hi_edit1/' );
+
+				loader.load( 'skver_hi_edit.gltf', function ( gltf ) {
+
+
+					//gltf.scene.position.y = 1;
+					gltf.scene.scale.set(1.1,1.1,1.1);
+					
+
+					gltf.scene.traverse( function ( child ) {
+
+						if ( child.isMesh ) {
+							child.material.envMap = exrCubeRenderTarget.texture;
+							//shadows are optional:
+							//child.castShadow = true;
+							//child.receiveShadow = true;
+						}
+
+					});
+					
+
+					scene.add( gltf.scene );
+
+					//render();
+					
+
+				} );
+
+				
+				//
+
+				const waterGeometry = new THREE.PlaneGeometry( 60, 50 );
+
+				water = new Water(
+					waterGeometry,
+					{
+						textureWidth: 128,
+						textureHeight: 128,
+						waterNormals: new THREE.TextureLoader().load( 'threejs/examples/textures/waternormals.jpg', function ( texture ) {
+
+							texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+						} ),
+						sunDirection: new THREE.Vector3(12, 5, 1).normalize(),
+						sunColor: 0xffffff,
+						waterColor: 0x001e0f,
+						distortionScale: 3.7,
+						fog: scene.fog !== undefined
+					}
+				);
+
+				water.position.z = - 15;	
+				water.position.y = - 2;				
+				water.rotation.x = - Math.PI / 2;
+
+				scene.add( water );
+
+
+				const pmremGenerator = new THREE.PMREMGenerator( renderer );
+				pmremGenerator.compileEquirectangularShader();				
+
+				//
+
+				document.body.appendChild( renderer.domElement );
+
+				//
+
+				document.body.appendChild( VRButton.createButton( renderer ) );
+
+				//
+				
+				const controls = new OrbitControls( camera, renderer.domElement );
+				controls.addEventListener( 'change', render ); // use if there is no animation loop
+				controls.minDistance = 1;
+				controls.maxDistance = 1000;
+				controls.target.set( 0, 4, -15 );
+				controls.update();
+
+				scene.background = exrBackground;
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				render();
+
+			}
+
+			function animate() {
+
+				renderer.setAnimationLoop( render );
+
+			}
+
+			function render() {
+				
+				// bad vr enter/exit
+				let isvr_now = renderer.xr.isPresenting;
+				
+				if(isvr_now) {
+					if(!isvr_prev) {
+						//entering vr
+						camera.position.set( 0, 1.65, -3 );
+					}
+				} else {
+					if(isvr_prev) {
+						//exiting vr
+					}
+				}				
+				isvr_prev = isvr_now;
+				
+				//-----
+
+				water.material.uniforms[ 'time' ].value += clock.getDelta()*.1;
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+
+	</body>
+</html>
