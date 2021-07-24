@@ -1,4 +1,7 @@
 # Man Running [game concept]
+
+<iframe src="https://player.vimeo.com/video/578824572" width="640" height="640" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+
 ◈ Third person runner
 ◈ No obstacles, no difficulties
 ◈ Long but not infinitive
@@ -20,7 +23,6 @@ There is no enemies in this game - only distractions.
 
 [more in presentation](https://docs.google.com/presentation/d/1cg4EXlEeBKTtUnIovWqRY5cbkt3SBbxGGctBn_Iew7M/edit?usp=sharing)
 
-<iframe src="https://player.vimeo.com/video/578824572" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 ru/
 
