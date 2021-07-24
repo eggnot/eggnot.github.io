@@ -23,8 +23,9 @@ There is no enemies in this game - only distractions.
 
 [more in presentation](https://docs.google.com/presentation/d/1cg4EXlEeBKTtUnIovWqRY5cbkt3SBbxGGctBn_Iew7M/edit?usp=sharing)
 
+***
 
-ru/
+[по русски](#ru)
 
 # человек бегущий [концепция игры]
 
