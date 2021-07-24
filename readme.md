@@ -1,7 +1,7 @@
 # алексей грищенко
 
 ## последние штуки
-[XR here!](xr) | [DSF](dsf) |
+[Man Running](man_running) | [XR here!](xr) | [DSF](dsf) |
 
 `#программирование #электроеника #3d_сканирование #3d_печать`
 `#programming #electronics #3d_scanning #3d_printing #arduino #processing #blender3d`
