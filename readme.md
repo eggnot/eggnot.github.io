@@ -20,7 +20,7 @@
 [Empathy Horn](empathy_horn) |
 [киберублюдки](cyberbastards) |
 [гараж грищенко](garage) |
-[музыкальная арка](music_arch) |
+[музыкальная арка](musical_arch) |
 [остановка лес](bus_stop) |
 [радио ядерного резонанса](nuclear_radio) |
 
