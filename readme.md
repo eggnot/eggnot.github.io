@@ -15,6 +15,8 @@
 В художественной деятельности предпочитает междисциплинарные коллаборации и экспериментальные проекты.
 
 ## проекты
+номер, в котором я остановился|
+The jump story |
 [Симулятор Носа](nose_simulator) |
 [B.A.U](bau) |
 [Empathy Horn](empathy_horn) |
@@ -23,6 +25,10 @@
 [музыкальная арка](musical_arch) |
 [остановка лес](bus_stop) |
 [радио ядерного резонанса](nuclear_radio) |
+сигнальные пары |
+public_heart |
+градусник шумомер |
+лицо человека |
 
 <iframe style="float: right; clear: left;"
     src="https://player.twitch.tv?channel=eggnot&parent=eggnot.com&parent=eggnot.github.com"
