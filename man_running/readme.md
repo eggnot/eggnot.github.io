@@ -1,6 +1,6 @@
 # Man Running [game concept]
 
-<iframe src="https://player.vimeo.com/video/578824572" width="50%" height="512" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe style="float: right; clear: left;" src="https://player.vimeo.com/video/578824572" width="50%" height="256" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 ◈ Third person runner
 ◈ No obstacles, no difficulties

@@ -2,7 +2,7 @@
 
 ### Hellraiser
 
-<iframe src="https://player.vimeo.com/video/553986346" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+<iframe style="float: right; clear: left;" src="https://player.vimeo.com/video/553986346" width="50%" height="256" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 Niccolò da Uzzano was a renaissance politician in Florence. Thanks to Donatello, we can imagine Niccolò rose from the dead to make politics again, now for eternity. He will need to feed on people and probably there will be women who will bring victims to him.
 3d scan from pushkin-museum copy work of Donatello, shaded and rendered in Blender Eevee.

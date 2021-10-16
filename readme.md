@@ -1,8 +1,5 @@
 # алексей грищенко
 
-## последние штуки
-[Man Running](man_running) | [XR here!](xr) | [DSF](dsf) |
-
 `#программирование #электроеника #3d_сканирование #3d_печать`
 `#programming #electronics #3d_scanning #3d_printing #arduino #processing #blender3d`
 
@@ -15,8 +12,8 @@
 В художественной деятельности предпочитает междисциплинарные коллаборации и экспериментальные проекты.
 
 ## проекты
-номер, в котором я остановился|
-The jump story |
+номер, в котором я остановился |
+[The jump story](the_jump_story) |
 [Симулятор Носа](nose_simulator) |
 [B.A.U](bau) |
 [Empathy Horn](empathy_horn) |
@@ -30,11 +27,9 @@ public_heart |
 градусник шумомер |
 лицо человека |
 
-<iframe style="float: right; clear: left;"
-    src="https://player.twitch.tv?channel=eggnot&parent=eggnot.com&parent=eggnot.github.com"
-    scrolling="no" frameborder="0" allow="autoplay; fullscreen"
-    width="300" height="200">
-</iframe>
+## идеи
+[Man Running](man_running) | [XR here!](xr) | [DSF](dsf) |
+
 
 ## соцсети 
 [instagram](https://www.instagram.com/eggnot1/) |
@@ -47,6 +42,11 @@ public_heart |
 [архив:киностудия](http://thekinostudio.blogspot.ru/)
 
 
+<iframe style="float: right; clear: left;"
+    src="https://player.twitch.tv?channel=eggnot&parent=eggnot.com&parent=eggnot.github.com"
+    scrolling="no" frameborder="0" allow="autoplay; fullscreen"
+    width="50%" height="240">
+</iframe>
 
 ## выставки
 ### персональные
