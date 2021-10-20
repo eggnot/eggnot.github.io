@@ -2,14 +2,15 @@ ru/
 
 # СИМУЛЯТОР НОСА
 
-Идут 60е, ты на кухне хрущёвки и у тебя очень длинный нос. Больше метра. Это единственный способ взаимодействия с миром вокруг. Можно всё разнести, мотая головой. А можно аккуратно вынюхать как выбраться из хрущёвки.
+Идут 60е, ты на кухне хрущёвки и у тебя очень длинный нос. Больше метра. Это единственный способ взаимодействия с миром вокруг. Можно всё разнести, мотая головой. А можно аккуратно вынюхать как выбраться.
+
+## первый трейлер такой:
+<iframe width="100%" height="240" src="https://www.youtube.com/embed/r5I2aBo5YYI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Это игра для VR, делалась на LD45 под смартфоны (cardboard или аналогичное устройство) а сейчас хочется перезапустить разработку под Oculus Quest. Подробный план разработки ниже.
 
 Пока можно скачать и попробовать версию 
 [с игрового джема](https://meownsk.itch.io/nose-simulator) .
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/JuizLQ5F4wI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Планируются этапы разработки под Oculus Quest
 + ~~Моделирование интерьера, мебели, основной посуды и предметов быта 60х~~
@@ -22,10 +23,12 @@ ru/
 + полноценные текстуры и материалы(?)
 
 ### панорама геометрии уровня
-<iframe width="100%" height="640" style="width: 100%; height: 640px; border: none; max-width: 100%;" frameborder="0" allowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer" scrolling="no" src="https://kuula.co/share/7yMVY?fs=1&vr=1&sd=1&thumbs=1&info=1&logo=1"></iframe>
+<iframe width="100%" height="480" style="width: 100%; height: 640px; border: none; max-width: 100%;" frameborder="0" allowfullscreen allow="xr-spatial-tracking; gyroscope; accelerometer" scrolling="no" src="https://kuula.co/share/7yMVY?fs=1&vr=1&sd=1&thumbs=1&info=1&logo=1"></iframe>
 
 
 ## История игры
+
+<iframe width="100%" height="240" src="https://www.youtube.com/embed/JuizLQ5F4wI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Это такое VR приложение, которое мы с ребятами сделали на игровой джем Ludum Dare 45(на площадке Sibgamejam)
 
@@ -34,11 +37,7 @@ ru/
 Я подумал сделать нос наоборот, основным объектом. Прототип был готов за час - просто палка к камере в юнити. И уже с этим пошёл на джем.
 
 Из обсуждения с командой мы пришли что предметы можно либо нюхать, либо крушить носом. День обсуждали какая это должна быть игра, день делали. Георгий замоделил посуду и холодильник, Танзиля нос и текстуры, Дмитрий всё это запрограммировал и подобрал звуки.
-исходник проекта
 
-https://gitlab.com/dimar-public-folder/ld45
+[исходник проекта](https://gitlab.com/dimar-public-folder/ld45)
 
 ## ~~Архивная копия apk~~
-
-архив трансляций процесса разработки доступен на Ютубе
-https://youtube.com/playlist?list=PL8XRkIoiq4N4uyFeX9ZKoNGOn2ivex27C
