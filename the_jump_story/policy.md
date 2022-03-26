@@ -5,7 +5,7 @@ Last updated: March 26, 2022
 ### Summary
 **The Jump Story** is a free hardcore vertical platformer puzzle game developed by *Aleksey Grishchenko* aka *eggnot*. It is provided at no cost and is intended for use as is. It does not collect any personal information and not intendent for children.
 
-As a piece of software **The Jump Story** game later referred as the/this “App”.
+As a piece of software **The Jump Story** referred as “App”.
 
 ### Information Collection and Use
 The App does not require the user to provide any personal information.
@@ -17,7 +17,7 @@ My App does not address anyone under the age of 13. I do not knowingly collect p
 
 
 ### Changes
-I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
+My Privacy Policy is a subject to change in the future. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
 
-**Contact Us**
+### Contact Me
 If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at mail@eggnot.com
