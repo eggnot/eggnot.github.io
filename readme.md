@@ -1,24 +1,28 @@
 # алексей грищенко
 
+Художник/Инженер из Новосибирска.
+В сфере интересов актуальные технологии, - 3d сканирование и печать, расширенная реальность и искусственный интеллект.
+
+Закончил технический университет, работал в научном институте. Участвовал в первой Московской биеннале современного искусства как ассистент, далее стал заниматься своими художественными проектами. В Последние два года работал с нейросетями, сейчас занимаюсь разработкой игр и VR.
+
+Проводил воркшопы по технологиям для художников в Сибири. Вёл хакспейс и совместную студию художников. В течении трёх лет организовывал ежемесячные гаражные выставки в Новосибирске.
+
+В художественной деятельности предпочитаю междисциплинарные коллаборации и экспериментальные проекты.
+
 `#программирование #электроеника #3d_сканирование #3d_печать`
 `#programming #electronics #3d_scanning #3d_printing #arduino #processing #blender3d`
 
-Инженер/художник из Новосибирска. Закончил технический университет, работал в научном институте. Последние два года работал с нейросетями, сейчас занимается разработкой игр и VR.
+## самоорганизация 
+[гараж грищенко](garage) |
+студия 109 |
+мастерская технологий |
+[киностудия](http://thekinostudio.blogspot.ru/) |
 
-В сфере интересов актуальные технологии, - 3d сканирование и печать, расширенная реальность и искусственный интеллект.
-
-Проводил воркшопы по технологиям для художников в Сибири. Вёл хакспейс. В течении трёх лет организовывал ежемесячные гаражные выставки в Новосибирске.
-
-В художественной деятельности предпочитает междисциплинарные коллаборации и экспериментальные проекты.
-
-## проекты
+## искусство
 номер, в котором я остановился |
-[The jump story](the_jump_story) |
-[Симулятор Носа](nose_simulator) |
 [B.A.U](bau) |
 [Empathy Horn](empathy_horn) |
 [киберублюдки](cyberbastards) |
-[гараж грищенко](garage) |
 [музыкальная арка](musical_arch) |
 [остановка лес](bus_stop) |
 [радио ядерного резонанса](nuclear_radio) |
@@ -27,26 +31,27 @@ public_heart |
 градусник шумомер |
 лицо человека |
 
-## идеи
+## игры
+[Slap face](https://eggnot.itch.io/slap-face) |
+[The jump story](the_jump_story) |
+[Krampus delivery](https://eggnot.itch.io/krampus-delivery) |
+[Симулятор Носа](nose_simulator) |
+
+
+## в кучу
 [Man Running](man_running) | [XR here!](xr) | [DSF](dsf) |
 
 
 ## соцсети 
 [instagram](https://www.instagram.com/eggnot1/) |
+[itch.io](https://eggnot.itch.io/)]
 [twitter](https://twitter.com/eggnot4) |
 [vimeo](https://vimeo.com/eggnot) |
 [thingiverse](https://www.thingiverse.com/eggnot) |
 [facebook](https://www.facebook.com/eggnot1) |
 [youtube](https://www.youtube.com/channelUCK0ev2LGNSdGau6gKvJhqIw) |
 [вконтач](https://vk.com/eggnot) | [художественная_техника](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A) |
-[архив:киностудия](http://thekinostudio.blogspot.ru/)
 
-
-<iframe style="float: right; clear: left;"
-    src="https://player.twitch.tv?channel=eggnot&parent=eggnot.com&parent=eggnot.github.com"
-    scrolling="no" frameborder="0" allow="autoplay; fullscreen"
-    width="50%" height="240">
-</iframe>
 
 ## выставки
 ### персональные

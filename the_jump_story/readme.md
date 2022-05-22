@@ -2,6 +2,9 @@
 
 <img width="90%" src="wide_crop.jpg" />
 
+## [The jump story(прототип)](https://eggnot.itch.io/the-jump-story)
+
+
 ## фичи
 * Вертикальный платформер с механикой рогатки
 * Одни уровни - пазлы, другие - веселье с физикой

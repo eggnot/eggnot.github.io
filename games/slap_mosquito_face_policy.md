@@ -1,11 +1,11 @@
-## Privacy Policy for **Slap mosquito face**
+## Privacy Policy for **Slap face mosquitoes**
 
 Last updated: April 25, 2022
 
 ### Summary
-**Slap mosquito face** is a free tapping casual game developed by *Aleksey Grishchenko* aka *eggnot*. It is provided at no cost and is intended for use as is. It does not collect any personal information and not intendent for children.
+**Slap face mosquitoes** is a free tapping casual game developed by *Aleksey Grishchenko* aka *eggnot*. It is provided at no cost and is intended for use as is. It does not collect any personal information and not intendent for children.
 
-As a piece of software **Slap mosquito face** referred as “App”.
+As a piece of software **Slap face mosquitoes** referred as “App”.
 
 ### Information Collection and Use
 The App does not require the user to provide any personal information.
