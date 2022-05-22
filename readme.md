@@ -36,6 +36,7 @@ public_heart |
 [The jump story](the_jump_story) |
 [Krampus delivery](https://eggnot.itch.io/krampus-delivery) |
 [Симулятор Носа](nose_simulator) |
+[ВСЕ](https://eggnot.itch.io/) |
 
 
 ## в кучу
