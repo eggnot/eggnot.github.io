@@ -1,0 +1,147 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v3.2.40",
+        "version" : "2.0"
+    },
+    "extensionsUsed" : [
+        "KHR_draco_mesh_compression"
+    ],
+    "extensionsRequired" : [
+        "KHR_draco_mesh_compression"
+    ],
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "pitekanec_ar",
+            "rotation" : [
+                0.48179227113723755,
+                0.5129134058952332,
+                -0.5512542724609375,
+                0.44823530316352844
+            ],
+            "scale" : [
+                0.09286844730377197,
+                0.09286844730377197,
+                0.09286844730377197
+            ],
+            "translation" : [
+                -0.044648729264736176,
+                0.03471028804779053,
+                -0.07264865934848785
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Material",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.8500000238418579
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "pitekanec_uv",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "extensions" : {
+                        "KHR_draco_mesh_compression" : {
+                            "bufferView" : 0,
+                            "attributes" : {
+                                "POSITION" : 0,
+                                "NORMAL" : 1,
+                                "TEXCOORD_0" : 2
+                            }
+                        }
+                    },
+                    "indices" : 3,
+                    "material" : 0,
+                    "mode" : 4
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "base_color",
+            "uri" : "pitekanec_base_color.webp"
+        }
+    ],
+    "accessors" : [
+        {
+            "componentType" : 5126,
+            "count" : 6720,
+            "max" : [
+                4.112483978271484,
+                3.646031618118286,
+                0.27030467987060547
+            ],
+            "min" : [
+                -6.670626163482666,
+                -3.4075183868408203,
+                -10.559656143188477
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "componentType" : 5126,
+            "count" : 6720,
+            "type" : "VEC3"
+        },
+        {
+            "componentType" : 5126,
+            "count" : 6720,
+            "type" : "VEC2"
+        },
+        {
+            "componentType" : 5123,
+            "count" : 33228,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 56322,
+            "byteOffset" : 0
+        }
+    ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9987
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 56324,
+            "uri" : "pitekanec_low.bin"
+        }
+    ]
+}
