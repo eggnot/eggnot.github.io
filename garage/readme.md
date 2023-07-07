@@ -1,15 +1,15 @@
-# Grischenko's garage (2016-2019)
+# Grischenko's Garage (2016-2019)
 
-Grischenko's garage are monthly exhibitions, and it’s a project of self-organisation.
+"Grischenko's Garage" was are monthly exhibitions, a project of self-organisation.
 
-Started as a way to show my own works and to have something happen regularly, later it became quite large. And it seems it was an important event for the local art scene.
+>Started as a way to show my own works and to have something happen regularly, later it became quite large. People consider it as an important event for the local art scene back then.
 
 Rules for Garage Exhibition is very simple:
 - Exhibition lasts for an evening.
 - There is no curator or any sort of selection. Participants install their works together, starting a few hours before opening.
 - Anybody can participate or show anything. Work should be done or finished in a last month and it should be something one wants to show.
 
-Last garage exhibition in Novosibirsk was on the 15th of October 2019. But following those ideas and principles, Garage Exhibitions are now happening in Ryazan.
+Last garage exhibition in Novosibirsk was on the 15th of October 2019. But following those ideas and principles, Garage Exhibitions was happening in Ryazan(run by Grigory Gryaznov) and with modifications, in other places.
 
 Press and archive:
 

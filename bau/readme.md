@@ -2,11 +2,9 @@
 
 VR-app done in collaboration with Mara Genschel, Katia Sophia Ditzler, Tomomi Adachi, Evgenii Gavrilov 
 
-5 artists, 5 levels to travel through. Every level is curated by one artist and composed of works done by four others. This collaboration happened this way because of a pandemic, as a research and an attempt of online collaboration.
+5 artists, 5 levels to travel through. Every level is curated by one artist and composed of works done by four others. This collaboration happened because in a COVID pandemic, as a research and an attempt of stretch of online collaboration.
 
-[apple.store](https://apps.apple.com/de/app/b-a-u/id1548413832) | 
-[google.play](https://play.google.com/store/apps/details?id=com.metamassiv.bau)
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gH2ARk3ie9w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 more here:
 https://www.lettretage.de/en/the-virtual-reality-app-b-a-u/
