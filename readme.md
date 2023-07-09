@@ -2,7 +2,7 @@
 
 [Biografie/cv(?) deutch](cv_de.md)
 
-Artist/poet(?) with tecnical background from Siberia.
+Artist/poet(?) with tecnical background from Siberia. Now I'm one of the *Berlin Wizards*
 
 
 <font color='gray'>I'm doing a lot of 3d-scanning (photogrammetry) lately, both as service and my artistic pratice. Examples on sketchfab.</font>
