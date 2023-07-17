@@ -8,16 +8,16 @@ Artist/poet(?) with tecnical background from Siberia. One of the *Berlin Wizards
 <font color='gray'>I'm doing a lot of 3d-scanning (photogrammetry) lately, both as service and my artistic pratice. Examples on sketchfab.</font>
 
 
-[instagram](https://www.instagram.com/eggnot1/) &verbar;
-[sketchfab](https://sketchfab.com/eggnot) &verbar;
-[itch.io](https://eggnot.itch.io/) &verbar;
-[twitter](https://twitter.com/eggnot4) &verbar;
-[vimeo](https://vimeo.com/eggnot) &verbar;
-[thingiverse](https://www.thingiverse.com/eggnot) &verbar;
-[facebook](https://www.facebook.com/eggnot1) &verbar;
-[youtube](https://www.youtube.com/channelUCK0ev2LGNSdGau6gKvJhqIw) &verbar;
-[vkontach](https://vk.com/eggnot) &verbar;
-[artistic_technique](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A) &verbar;
+[instagram](https://www.instagram.com/eggnot1/) /
+[sketchfab](https://sketchfab.com/eggnot) /
+[itch.io](https://eggnot.itch.io/) /
+[twitter](https://twitter.com/eggnot4) /
+[vimeo](https://vimeo.com/eggnot) /
+[thingiverse](https://www.thingiverse.com/eggnot) /
+[facebook](https://www.facebook.com/eggnot1) /
+[youtube](https://www.youtube.com/channelUCK0ev2LGNSdGau6gKvJhqIw) /
+[vkontach](https://vk.com/eggnot) /
+[artistic_technique](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A) /
 
 ## brief
 
