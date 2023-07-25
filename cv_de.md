@@ -2,8 +2,6 @@
 
 Künstler und Ingenieur. Interessiert an Technologie und kollaborativem Arbeiten
 
-[по-русски](readme_ru.md) | [CV english](cv_en.md)
-
 ### Persönliche Daten
 Geboren am 15.10.1980 in Nowosibirsk, Russland
 

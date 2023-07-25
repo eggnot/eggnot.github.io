@@ -1,6 +1,7 @@
 # Alexey Grishchenko
 
-[Biografie/cv(?) deutch](cv_de.md)
+[Biografie/cv(?) deutch](cv_de.md) | [CV english](cv_en.md)
+
 
 Artist/freelancer with tecnical background from Siberia.
 
