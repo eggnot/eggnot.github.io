@@ -7,7 +7,7 @@ VR-app done in collaboration with Mara Genschel, Katia Sophia Ditzler, Tomomi Ad
 <iframe width="560" height="315" src="https://www.youtube.com/embed/gH2ARk3ie9w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 more here:
-https://www.lettretage.de/en/the-virtual-reality-app-b-a-u/
+[lettretage.de/en/the-virtual-reality-app-b-a-u](https://www.lettretage.de/en/the-virtual-reality-app-b-a-u/)
 
 ru/
 

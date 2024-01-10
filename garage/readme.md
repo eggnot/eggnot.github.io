@@ -13,9 +13,11 @@ Last garage exhibition in Novosibirsk was on the 15th of October 2019. But follo
 
 Press and archive:
 
-https://taz.de/Kulturaustausch-in-Nowosibirsk/!5625040/
-http://makersofsiberia.com/lyudi/alexei-grishenko.html
-https://vk.com/@rost.media-garazh-i-grischenko
+[taz.de/Kulturaustausch-in-Nowosibirsk/!5625040](https://taz.de/Kulturaustausch-in-Nowosibirsk/!5625040/)
+
+[makersofsiberia.com/lyudi/alexei-grishenko.html](http://makersofsiberia.com/lyudi/alexei-grishenko.html)
+
+[vk.com/@rost.media-garazh-i-grischenko](https://vk.com/@rost.media-garazh-i-grischenko)
 
 /ru
 
@@ -26,13 +28,18 @@ https://vk.com/@rost.media-garazh-i-grischenko
 У каждой выставки было название, но не было куратора, концепции и какой-либо длительной подготовки. Основная идея: показать последние сделанные работы или рабочий процесс, поэтому на выставках в том числе экспонировались незавершенные произведения или экспериментальные вещи, которые не могут быть однозначно названы произведениями искусства.
 
 больше всего фотографий в архиве САСИ
-http://siberian-archive.ru/garage/
+[siberian-archive.ru/garage](http://siberian-archive.ru/garage/)
 
 пресса:
 
-http://makersofsiberia.com/lyudi/alexei-grishenko.html
-https://vk.com/@rost.media-garazh-i-grischenko
-https://russianartarchive.net/en/catalogue/organization/OQRT
-https://vashgorod.ru/novosibirsk/news/127480
+[makersofsiberia.com/lyudi/alexei-grishenko.html](http://makersofsiberia.com/lyudi/alexei-grishenko.html)
+
+[vk.com/@rost.media-garazh-i-grischenko](https://vk.com/@rost.media-garazh-i-grischenko)
+
+
+[russianartarchive.net/en/catalogue/organization/OQRT](https://russianartarchive.net/en/catalogue/organization/OQRT)
+
+
+## ещё
 
 [мой текст по поводу завершения гаражек](order_of_things.md)
