@@ -29,7 +29,8 @@ In artistic work, prefers interdisciplinary collaborations and experimental proj
 [vkontach](https://vk.com/eggnot) •
 [artistic_technique](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A) •
 
-$~~$
+<br /><br />
+
 # poorly documented activities
 
 ## art-projects & instalations
