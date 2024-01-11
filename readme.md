@@ -1,4 +1,4 @@
-?
+•
 # Aleksey Grishchenko
 
 Artist/freelancer with tecnical background from Siberia.
@@ -26,7 +26,8 @@ In artistic work, prefers interdisciplinary collaborations and experimental proj
 [vkontach](https://vk.com/eggnot) •
 [artistic_technique](https://www.youtube.com/channel/UCdvlxi_PDWnofwnoCXpuH8A) •
 
-# activities
+$~~$
+# poorly documented activities
 
 ## art-projects & instalations
 • room where I stayed •
