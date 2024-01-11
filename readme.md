@@ -12,10 +12,13 @@ Interested in technologies - 3d scanning and printing, extended reality, game de
 
 In artistic work, prefers interdisciplinary collaborations and experimental projects.
 
-[CV, bio, skills](cv-bio.md)
+•
+[CV, bio, skills](cv-bio.md) •
+[pdf version](cv/bio-cv-2024.pdf) •
 
 ## socials
-• [instagram](https://www.instagram.com/eggnot1/) •
+•
+[instagram](https://www.instagram.com/eggnot1/) •
 [sketchfab](https://sketchfab.com/eggnot) •
 [itch.io](https://eggnot.itch.io/) •
 [twitter](https://twitter.com/eggnot4) •
