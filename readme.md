@@ -31,7 +31,7 @@ In artistic work, prefers interdisciplinary collaborations and experimental proj
 
 <br /><br />
 
-# poorly documented activities
+# documented activities
 
 ## art-projects & instalations
 • room where I stayed •

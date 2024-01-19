@@ -12,7 +12,7 @@ I graduated from Novosibirsk State Technical University with a degree in Design 
 
 From 1999 to 2004, I worked as a Junior Researcher at the Newest Media Department of the Institute of Archaeology and Ethnography. During this time, I was designing and programming GIS and 3D-scanning applications for archaeologists.
 
-In 2005, I worked as an artist assistant at the first Moscow biennale of contemporary art, where I assisted with film production for Clemens von Wedemeyer.
+In 2005, I worked as an artist assistant at the first Moscow biennale of contemporary art, where I assisted with film production for Clemens von Wedemeyer, Gelitin group and others.
 
 In 2006, I was in the artist residence Blumen in Leipzig, where I worked as a feature film director and video editor. Later, I worked as an artist and video editor in Moscow, but in late 2009, I returned to Novosibirsk.
 
