@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yearly Grid Diary</title>
+    <style>
+        :root {
+            --bg-app: #f4f4f4;
+            --bg-cell: #ffffff;
+            --bg-dim: #e0e0e0;
+            --bg-active: #e3f2fd;
+            --line-color: #555;
+            --line-strong: #000;
+            --text-color: #333;
+            --font-ui: system-ui, -apple-system, sans-serif;
+        }
+
+        body { margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; font-family: var(--font-ui); background: var(--bg-app); }
+
+        /* Main Layout */
+        #app {
+            display: grid;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            /* Default: Landscape (Days on X-axis/Longer, Months on Y) */
+            grid-template-columns: 2rem repeat(37, 1fr);
+            grid-template-rows: 1.5rem repeat(12, 1fr) 3rem; 
+            gap: 1px;
+            background-color: var(--line-color);
+            border: 1px solid var(--line-color);
+        }
+
+        /* Portrait: Days on Y-axis/Longer, Months on X */
+        @media (aspect-ratio: 1/1), (max-aspect-ratio: 1/1) {
+            #app {
+                grid-template-columns: 1.5rem repeat(12, 1fr);
+                grid-template-rows: 2rem repeat(37, 1fr) 3rem;
+            }
+        }
+
+        /* Cell Styling */
+        .cell, .header, .nav {
+            background: var(--bg-cell);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Headers (Months/Days) */
+        .header { background: #fafafa; font-weight: bold; color: #666; }
+        .header-corner { grid-row: 1; grid-column: 1; }
+        .header-day { border: none; background: var(--bg-app); color: #888; }
+
+        /* Day Cells */
+        .day-cell { 
+            font-size: 0.8rem; 
+            font-weight: 500;
+            transition: background 0.1s;
+        }
+        
+        /* Digit inside cell */
+        .day-number { z-index: 1; pointer-events: none; }
+
+        /* State Styles */
+        .past { background: var(--bg-dim); color: #888; }
+        .future { background: var(--bg-cell); }
+        .has-content { background: var(--bg-active); }
+        .today { border: 2px solid blue !important; }
+        .invalid { background: #ccc; pointer-events: none; } /* e.g. Feb 30 */
+
+        /* Sunday Border Logic */
+        /* Landscape: Days are Columns. Sunday line means vertical line on right */
+        .sunday-border { border-right: 2px solid var(--line-strong); margin-right: -1px; z-index: 2; }
+        
+        /* Portrait: Days are Rows. Sunday line means bottom line */
+        @media (aspect-ratio: 1/1), (max-aspect-ratio: 1/1) {
+            .sunday-border { border-right: none; border-bottom: 2px solid var(--line-strong); margin-bottom: -1px; }
+        }
+
+        /* Navigation Area */
+        .nav {
+            grid-row: -2 / -1;
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2rem;
+            background: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .nav-btn { cursor: pointer; padding: 0.5rem 1rem; user-select: none; }
+
+        /* Full Screen Editor */
+        #editor {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 100;
+            display: flex; flex-direction: column;
+            transform: translateY(100%); transition: transform 0.25s ease-out;
+        }
+        #editor.open { transform: translateY(0); }
+        
+        .editor-header { 
+            padding: 1rem; border-bottom: 1px solid #eee; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        textarea {
+            flex: 1; border: none; padding: 1.5rem; resize: none;
+            font-size: 1.2rem; font-family: var(--font-ui); outline: none; line-height: 1.5;
+        }
+        .editor-tools {
+            padding: 10px; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center;
+        }
+        .btn-icon { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .btn-back { margin-right: 1rem; }
+        .editor-hint { font-size: 0.8rem; color: #888; }
+        input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; background: none; }
+        
+    </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<div id="editor">
+    <div class="editor-header">
+        <button onclick="closeEditor()" class="btn-icon btn-back">&#8592;</button>
+        <span id="editor-date-label"></span>
+        <button onclick="closeEditor()" class="btn-icon">✕</button>
+    </div>
+    <textarea id="diary-text" placeholder="Write your day..."></textarea>
+    <div class="editor-tools">
+        <input type="color" id="color-picker" title="Insert Color HEX">
+        <span class="editor-hint">Pick to insert HEX at cursor</span>
+    </div>
+</div>
+
+<script>
+    const app = document.getElementById('app');
+    const editor = document.getElementById('editor');
+    const textArea = document.getElementById('diary-text');
+    const dateLabel = document.getElementById('editor-date-label');
+    const colorPicker = document.getElementById('color-picker');
+
+    let currentYear = new Date().getFullYear();
+    let editingKey = null;
+
+    const MONTH_LABELS = "JFMAMJJASOND".split('');
+    const WEEK_LABELS = "SMTWTFS".split('');
+
+    // --- Core Logic ---
+
+    function init() {
+        renderGrid();
+        window.addEventListener('resize', renderGrid); // Re-render to fix grid placements if aspect ratio flips
+        
+        // History API for Back Button
+        window.onpopstate = (e) => {
+            if (editor.classList.contains('open')) closeEditor(false);
+        };
+    }
+
+    function getStorageKey(y, m, d) {
+        return `D_${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+
+    function getDayColor(text) {
+        if (!text) return null;
+        const firstLine = text.split('\n')[0].trim();
+        const hexMatch = /^#[0-9A-Fa-f]{6}/.test(firstLine);
+        return hexMatch ? firstLine : null;
+    }
+
+    function renderGrid() {
+        app.innerHTML = '';
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const now = new Date();
+        const todayKey = getStorageKey(now.getFullYear(), now.getMonth()+1, now.getDate());
+
+        // 1. Headers
+        // Top-left corner spacer
+        const spacer = document.createElement('div');
+        spacer.className = 'header header-corner';
+        app.appendChild(spacer);
+
+        // Axis 1 Headers (Top Row)
+        const axis1Max = isPortrait ? 12 : 37; // Portrait: Months on top. Landscape: Days on top.
+        for(let i=1; i<=axis1Max; i++) {
+            const el = document.createElement('div');
+            el.className = 'header';
+            if (!isPortrait) el.classList.add('header-day');
+            el.textContent = isPortrait ? MONTH_LABELS[i-1] : WEEK_LABELS[(i-1)%7];
+            el.style.gridRow = '1';
+            el.style.gridColumn = String(i + 1);
+            app.appendChild(el);
+        }
+
+        // Axis 2 Headers (Left Column)
+        const axis2Max = isPortrait ? 37 : 12; // Portrait: Days on left. Landscape: Months on left.
+        for(let i=1; i<=axis2Max; i++) {
+            const el = document.createElement('div');
+            el.className = 'header';
+            if (isPortrait) el.classList.add('header-day');
+            el.textContent = isPortrait ? WEEK_LABELS[(i-1)%7] : MONTH_LABELS[i-1];
+            el.style.gridRow = String(i + 1);
+            el.style.gridColumn = '1';
+            app.appendChild(el);
+        }
+
+        // 2. Grid Cells
+        for (let m = 0; m < 12; m++) {
+            const daysInMonth = new Date(currentYear, m + 1, 0).getDate();
+            const firstDay = new Date(currentYear, m, 1).getDay(); // 0(Sun) to 6(Sat)
+            
+            for (let d = 1; d <= daysInMonth; d++) {
+                const el = document.createElement('div');
+                el.className = 'cell day-cell';
+                
+                // Grid Placement
+                // M (0-11) -> 1-12
+                // D (1-31) + Shift
+                const row = isPortrait ? (d + firstDay + 1) : (m + 2);
+                const col = isPortrait ? (m + 2) : (d + firstDay + 1);
+                
+                el.style.gridRow = row;
+                el.style.gridColumn = col;
+
+                const dateObj = new Date(currentYear, m, d);
+                const storageKey = getStorageKey(currentYear, m + 1, d);
+                const content = localStorage.getItem(storageKey) || "";
+                
+                // Display Digit
+                const span = document.createElement('span');
+                span.className = 'day-number';
+                span.textContent = d;
+                el.appendChild(span);
+
+                // Logic: Sunday Border
+                if (dateObj.getDay() === 0) el.classList.add('sunday-border');
+
+                // Logic: Colors
+                const customColor = getDayColor(content);
+                
+                if (storageKey === todayKey) {
+                    el.classList.add('today');
+                }
+
+                if (dateObj < new Date().setHours(0,0,0,0)) {
+                    el.classList.add('past');
+                    if (customColor) el.style.backgroundColor = customColor; 
+                    else if (content) el.classList.add('has-content');
+                } else {
+                    el.classList.add('future');
+                    if (customColor) el.style.backgroundColor = customColor;
+                    else if (content) el.classList.add('has-content');
+                }
+
+                el.onclick = () => openEditor(dateObj, storageKey);
+                app.appendChild(el);
+            }
+        }
+
+        // 3. Navigation Footer
+        const nav = document.createElement('div');
+        nav.className = 'nav';
+        nav.innerHTML = `
+            <span class="nav-btn" onclick="changeYear(-1)">&#8592;</span>
+            <span>${currentYear}</span>
+            <span class="nav-btn" onclick="changeYear(1)">&#8594;</span>
+        `;
+        app.appendChild(nav);
+    }
+
+    // --- Interaction ---
+
+    function changeYear(delta) {
+        currentYear += delta;
+        renderGrid();
+    }
+
+    function openEditor(dateObj, key) {
+        editingKey = key;
+        const content = localStorage.getItem(key) || "";
+        
+        textArea.value = content;
+        dateLabel.innerText = dateObj.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+        editor.classList.add('open');
+        history.pushState({editorOpen: true}, ""); // Push state for back button support
+    }
+
+    function closeEditor(goBack = true) {
+        // Save
+        const val = textArea.value.trim();
+        if (val) {
+            localStorage.setItem(editingKey, textArea.value);
+        } else {
+            localStorage.removeItem(editingKey);
+        }
+        
+        editor.classList.remove('open');
+        textArea.blur();
+        renderGrid(); // Refresh view to show changes
+        
+        if (goBack) history.back();
+    }
+
+    // Color Picker Logic
+    colorPicker.addEventListener('change', (e) => {
+        const color = e.target.value;
+        const start = textArea.selectionStart;
+        const end = textArea.selectionEnd;
+        const text = textArea.value;
+        
+        // Logic: Insert hex at cursor. If at very start, it controls BG.
+        const before = text.substring(0, start);
+        const after = text.substring(end, text.length);
+        
+        // Add newline if not empty and not at start to ensure clean line
+        const prefix = (start > 0 && text[start-1] !== '\n') ? '\n' : '';
+        
+        textArea.value = before + prefix + color + after;
+        textArea.focus();
+    });
+
+    init();
+
+</script>
+</body>
+</html>
