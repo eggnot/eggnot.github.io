@@ -48,7 +48,7 @@
         }
 
         /* Cell Styling */
-        .cell, .header, .nav {
+        .cell, .header, .header-day, .nav {
             background: var(--bg-cell);
             display: flex;
             align-items: center;
@@ -61,14 +61,13 @@
         }
 
         /* Headers (Months/Days) */
-        .header { background: #fafafa; font-weight: bold; color: #666; font-size: 0.55rem; }
-        .header-corner { grid-row: 1; grid-column: 1; }
-        .header-day { border: none; background: var(--bg-app); color: #888; }
+        .header { background: gray; font-weight: bold; color: white; font-size: 0.55rem; }
+        .header-day { border: none; background: gray; color: white; }
 
         /* Day Cells */
         .day-cell { 
             font-size: 0.8rem; 
-            font-weight: 500;
+            font-weight: 350;
             transition: background 0.1s;
         }
         
@@ -80,16 +79,10 @@
         .future { background: var(--bg-cell); }
         .has-content { background: var(--bg-active); }
         .today { border: 2px solid blue !important; }
-        .invalid { background: #ccc; pointer-events: none; } /* e.g. Feb 30 */
+        .invalid { background: pink; pointer-events: none; } /* e.g. Feb 30 */
 
-        /* Sunday Border Logic */
-        /* Landscape: Days are Columns. Sunday line means vertical line on right */
-        .sunday-border { border-right: 2px solid var(--line-strong); margin-right: -1px; z-index: 2; }
-        
-        /* Portrait: Days are Rows. Sunday line means bottom line */
-        @media (aspect-ratio: 1/1), (max-aspect-ratio: 1/1) {
-            .sunday-border { border-right: none; border-bottom: 2px solid var(--line-strong); margin-bottom: -1px; }
-        }
+        .sunday{ color: red; }
+
 
         /* Navigation Area */
         .nav {
@@ -97,7 +90,6 @@
             grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding: 0 1rem;
             background: #fff;
             font-size: 1rem;
@@ -198,7 +190,7 @@
     let editingKey = null;
     let currentEditingDate = null;
 
-    const MONTH_LABELS = "JFMAMJJASOND".split('');
+    const MONTH_LABELS = "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec".split(',');
     const WEEK_LABELS = "SMTWTFS".split('');
 
     // --- Core Logic ---
@@ -229,13 +221,13 @@
         const nav = document.createElement('div');
         nav.className = 'nav';
         nav.innerHTML = `
-            <div class="nav-btn" onclick="openModal('help-modal')">ⓘ</div>
             <div class="nav-center">
                 <span class="nav-btn" onclick="changeYear(-1)">←</span>
                 <span>${currentYear}</span>
                 <span class="nav-btn" onclick="changeYear(1)">→</span>
             </div>
             <div class="nav-btn" onclick="openModal('settings-modal')">⚙</div>
+            <div class="nav-btn" onclick="openModal('help-modal')">ⓘ</div>
         `;
         app.appendChild(nav);
 
@@ -292,8 +284,7 @@
                 span.textContent = d;
                 el.appendChild(span);
 
-                // Logic: Sunday Border
-                if (dateObj.getDay() === 0) el.classList.add('sunday-border');
+                if (dateObj.getDay() === 0) el.classList.add('sunday');
 
                 if (storageKey === todayKey) {
                     el.classList.add('today');
