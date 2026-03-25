@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Grid Diary">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f4f4f4">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+
+    <title>Yearly Grid Diary</title>
+    <link rel="stylesheet" type="text/css" href="ygd.css">
+    <script src="ygd.js" type="text/javascript" defer></script>
+    <script src="editor.js" type="text/javascript" defer></script>
+    <script src="ui.js" type="text/javascript" defer></script>
+    <script src="data.js" type="text/javascript" defer></script>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-center">
+        <button class="nav-btn" onclick="changeYear(-1)">←</button>
+        <span id="current-year-display"></span>
+        <button class="nav-btn" onclick="changeYear(1)">→</button>
+    </div>
+    <div>
+        <button class="nav-btn" onclick="openModal('settings-modal')">⚙</button>
+        <button class="nav-btn" onclick="openModal('help-modal')">ⓘ</button>
+    </div>
+</nav>
+
+<div id="app"></div>
+
+<div id="editor" class="modal-window">
+    <div class="modal-header">
+        <button onclick="navigateDay(-1)" class="btn-icon">←</button>
+        <div class="date-header-group">
+            <span id="editor-date-label" class="date-label"></span>
+            <div class="color-block">
+                <input type="color" id="cell-color-picker" class="color-picker" title="Choose cell color">
+                <button onclick="clearColor()" class="btn-icon-small" title="Clear color">✕</button>
+            </div>
+        </div>
+        <button onclick="navigateDay(1)" class="btn-icon">→</button>
+        <button onclick="closeEditor()" class="btn-icon">✕</button>
+    </div>
+    <textarea id="diary-text" placeholder="Write your day..."></textarea>
+    <div class="editor-nav-row">
+        <button onclick="navigateEntry(-1)" class="btn-text">⟪ Prev Entry</button>
+        <button onclick="navigateEntry(1)" class="btn-text">Next Entry ⟫</button>
+    </div>
+</div>
+
+<div id="help-modal" class="modal-window">
+    <div class="modal-header">
+        <span>Help</span>
+        <button onclick="closeModal('help-modal')" class="btn-icon">✕</button>
+    </div>
+    <div class="modal-body">
+        <p>Yearly Grid Diary allows you to visualize your entire year at a glance.</p>
+        <p>Tap any cell to write a note for that day. Cells with content are highlighted.</p>
+        <p>Use the top navigation to change years or access settings.</p>
+    </div>
+</div>
+
+<div id="settings-modal" class="modal-window">
+    <div class="modal-header">
+        <span>Settings</span>
+        <button onclick="closeModal('settings-modal')" class="btn-icon">✕</button>
+    </div>
+    <div class="modal-body">
+        <div class="settings-group">
+            <h3>Data Management</h3>
+            <p>Export your diary to a CSV file or import data from a previous backup.</p>
+            <div class="settings-actions">
+                <button class="btn-text" onclick="exportCSV()">Export CSV</button>
+                <button class="btn-text" onclick="document.getElementById('import-file').click()">Import CSV</button>
+                <input type="file" id="import-file" class="hidden" accept=".csv" onchange="importCSV(this)">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
