@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Grid Diary">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f4f4f4">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+
     <title>Yearly Grid Diary</title>
     <style>
         :root {
@@ -26,7 +33,7 @@
             box-sizing: border-box;
             /* Default: Landscape (Days on X-axis/Longer, Months on Y) */
             grid-template-columns: 2rem repeat(37, 1fr);
-            grid-template-rows: 1.5rem repeat(12, 1fr) 3rem; 
+            grid-template-rows: 3rem 1.5rem repeat(12, 1fr);
             gap: 1px;
             background-color: var(--line-color);
             border: 1px solid var(--line-color);
@@ -36,7 +43,7 @@
         @media (aspect-ratio: 1/1), (max-aspect-ratio: 1/1) {
             #app {
                 grid-template-columns: 1.5rem repeat(12, 1fr);
-                grid-template-rows: 2rem repeat(37, 1fr) 3rem;
+                grid-template-rows: 3rem 2rem repeat(37, 1fr);
             }
         }
 
@@ -46,7 +53,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             position: relative;
             overflow: hidden;
             cursor: pointer;
@@ -54,7 +61,7 @@
         }
 
         /* Headers (Months/Days) */
-        .header { background: #fafafa; font-weight: bold; color: #666; }
+        .header { background: #fafafa; font-weight: bold; color: #666; font-size: 0.55rem; }
         .header-corner { grid-row: 1; grid-column: 1; }
         .header-day { border: none; background: var(--bg-app); color: #888; }
 
@@ -86,41 +93,50 @@
 
         /* Navigation Area */
         .nav {
-            grid-row: -2 / -1;
+            grid-row: 1 / 2;
             grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
-            padding: 0 2rem;
+            align-items: center;
+            padding: 0 1rem;
             background: #fff;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
         }
-        .nav-btn { cursor: pointer; padding: 0.5rem 1rem; user-select: none; }
+        .nav-center { display: flex; align-items: center; gap: 1rem; }
+        .nav-btn { cursor: pointer; padding: 0.5rem; user-select: none; font-size: 1.2rem; }
 
-        /* Full Screen Editor */
-        #editor {
+        /* Modal Windows (Editor, Help, Settings) */
+        .modal-window {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 100;
             display: flex; flex-direction: column;
             transform: translateY(100%); transition: transform 0.25s ease-out;
         }
-        #editor.open { transform: translateY(0); }
+        .modal-window.open { transform: translateY(0); }
         
-        .editor-header { 
+        .modal-header { 
             padding: 1rem; border-bottom: 1px solid #eee; 
             display: flex; justify-content: space-between; align-items: center;
         }
+        .modal-body { flex: 1; padding: 1.5rem; overflow-y: auto; }
+
         textarea {
             flex: 1; border: none; padding: 1.5rem; resize: none;
-            font-size: 1.2rem; font-family: var(--font-ui); outline: none; line-height: 1.5;
+            font-size: 1.1rem; font-family: var(--font-ui); outline: none; line-height: 1.5;
         }
-        .editor-tools {
-            padding: 10px; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center;
+        
+        .editor-nav-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 1rem; background: #f9f9f9; border-top: 1px solid #eee;
         }
-        .btn-icon { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
-        .btn-back { margin-right: 1rem; }
-        .editor-hint { font-size: 0.8rem; color: #888; }
-        input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; background: none; }
+
+        .btn-icon { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 5px 10px; }
+        .btn-text { background: #eee; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+        
+        .settings-group { margin-bottom: 2rem; }
+        .settings-group h3 { margin-top: 0; }
+        .settings-group p { font-size: 0.9rem; color: #666; }
         
     </style>
 </head>
@@ -128,16 +144,47 @@
 
 <div id="app"></div>
 
-<div id="editor">
-    <div class="editor-header">
-        <button onclick="closeEditor()" class="btn-icon btn-back">&#8592;</button>
-        <span id="editor-date-label"></span>
+<div id="editor" class="modal-window">
+    <div class="modal-header">
+        <button onclick="navigateDay(-1)" class="btn-icon">←</button>
+        <span id="editor-date-label" style="font-size: 0.9rem; font-weight: bold;"></span>
+        <button onclick="navigateDay(1)" class="btn-icon">→</button>
         <button onclick="closeEditor()" class="btn-icon">✕</button>
     </div>
     <textarea id="diary-text" placeholder="Write your day..."></textarea>
-    <div class="editor-tools">
-        <input type="color" id="color-picker" title="Insert Color HEX">
-        <span class="editor-hint">Pick to insert HEX at cursor</span>
+    <div class="editor-nav-row">
+        <button onclick="navigateEntry(-1)" class="btn-text">⟪ Prev Entry</button>
+        <button onclick="navigateEntry(1)" class="btn-text">Next Entry ⟫</button>
+    </div>
+</div>
+
+<div id="help-modal" class="modal-window">
+    <div class="modal-header">
+        <span>Help</span>
+        <button onclick="closeModal('help-modal')" class="btn-icon">✕</button>
+    </div>
+    <div class="modal-body">
+        <p>Yearly Grid Diary allows you to visualize your entire year at a glance.</p>
+        <p>Tap any cell to write a note for that day. Cells with content are highlighted.</p>
+        <p>Use the top navigation to change years or access settings.</p>
+    </div>
+</div>
+
+<div id="settings-modal" class="modal-window">
+    <div class="modal-header">
+        <span>Settings</span>
+        <button onclick="closeModal('settings-modal')" class="btn-icon">✕</button>
+    </div>
+    <div class="modal-body">
+        <div class="settings-group">
+            <h3>Data Management</h3>
+            <p>Export your diary to a CSV file or import data from a previous backup.</p>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-text" onclick="exportCSV()">Export CSV</button>
+                <button class="btn-text" onclick="document.getElementById('import-file').click()">Import CSV</button>
+                <input type="file" id="import-file" style="display:none" accept=".csv" onchange="importCSV(this)">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -146,10 +193,10 @@
     const editor = document.getElementById('editor');
     const textArea = document.getElementById('diary-text');
     const dateLabel = document.getElementById('editor-date-label');
-    const colorPicker = document.getElementById('color-picker');
 
     let currentYear = new Date().getFullYear();
     let editingKey = null;
+    let currentEditingDate = null;
 
     const MONTH_LABELS = "JFMAMJJASOND".split('');
     const WEEK_LABELS = "SMTWTFS".split('');
@@ -163,18 +210,13 @@
         // History API for Back Button
         window.onpopstate = (e) => {
             if (editor.classList.contains('open')) closeEditor(false);
+            closeModal('help-modal');
+            closeModal('settings-modal');
         };
     }
 
     function getStorageKey(y, m, d) {
         return `D_${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    }
-
-    function getDayColor(text) {
-        if (!text) return null;
-        const firstLine = text.split('\n')[0].trim();
-        const hexMatch = /^#[0-9A-Fa-f]{6}/.test(firstLine);
-        return hexMatch ? firstLine : null;
     }
 
     function renderGrid() {
@@ -183,12 +225,21 @@
         const now = new Date();
         const todayKey = getStorageKey(now.getFullYear(), now.getMonth()+1, now.getDate());
 
-        // 1. Headers
-        // Top-left corner spacer
-        const spacer = document.createElement('div');
-        spacer.className = 'header header-corner';
-        app.appendChild(spacer);
+        // 0. Navigation Header
+        const nav = document.createElement('div');
+        nav.className = 'nav';
+        nav.innerHTML = `
+            <div class="nav-btn" onclick="openModal('help-modal')">ⓘ</div>
+            <div class="nav-center">
+                <span class="nav-btn" onclick="changeYear(-1)">←</span>
+                <span>${currentYear}</span>
+                <span class="nav-btn" onclick="changeYear(1)">→</span>
+            </div>
+            <div class="nav-btn" onclick="openModal('settings-modal')">⚙</div>
+        `;
+        app.appendChild(nav);
 
+        // 1. Headers
         // Axis 1 Headers (Top Row)
         const axis1Max = isPortrait ? 12 : 37; // Portrait: Months on top. Landscape: Days on top.
         for(let i=1; i<=axis1Max; i++) {
@@ -196,7 +247,7 @@
             el.className = 'header';
             if (!isPortrait) el.classList.add('header-day');
             el.textContent = isPortrait ? MONTH_LABELS[i-1] : WEEK_LABELS[(i-1)%7];
-            el.style.gridRow = '1';
+            el.style.gridRow = '2';
             el.style.gridColumn = String(i + 1);
             app.appendChild(el);
         }
@@ -208,7 +259,7 @@
             el.className = 'header';
             if (isPortrait) el.classList.add('header-day');
             el.textContent = isPortrait ? WEEK_LABELS[(i-1)%7] : MONTH_LABELS[i-1];
-            el.style.gridRow = String(i + 1);
+            el.style.gridRow = String(i + 2);
             el.style.gridColumn = '1';
             app.appendChild(el);
         }
@@ -225,7 +276,7 @@
                 // Grid Placement
                 // M (0-11) -> 1-12
                 // D (1-31) + Shift
-                const row = isPortrait ? (d + firstDay + 1) : (m + 2);
+                const row = isPortrait ? (d + firstDay + 2) : (m + 3);
                 const col = isPortrait ? (m + 2) : (d + firstDay + 1);
                 
                 el.style.gridRow = row;
@@ -244,37 +295,22 @@
                 // Logic: Sunday Border
                 if (dateObj.getDay() === 0) el.classList.add('sunday-border');
 
-                // Logic: Colors
-                const customColor = getDayColor(content);
-                
                 if (storageKey === todayKey) {
                     el.classList.add('today');
                 }
 
                 if (dateObj < new Date().setHours(0,0,0,0)) {
                     el.classList.add('past');
-                    if (customColor) el.style.backgroundColor = customColor; 
-                    else if (content) el.classList.add('has-content');
+                    if (content) el.classList.add('has-content');
                 } else {
                     el.classList.add('future');
-                    if (customColor) el.style.backgroundColor = customColor;
-                    else if (content) el.classList.add('has-content');
+                    if (content) el.classList.add('has-content');
                 }
 
                 el.onclick = () => openEditor(dateObj, storageKey);
                 app.appendChild(el);
             }
         }
-
-        // 3. Navigation Footer
-        const nav = document.createElement('div');
-        nav.className = 'nav';
-        nav.innerHTML = `
-            <span class="nav-btn" onclick="changeYear(-1)">&#8592;</span>
-            <span>${currentYear}</span>
-            <span class="nav-btn" onclick="changeYear(1)">&#8594;</span>
-        `;
-        app.appendChild(nav);
     }
 
     // --- Interaction ---
@@ -286,6 +322,7 @@
 
     function openEditor(dateObj, key) {
         editingKey = key;
+        currentEditingDate = new Date(dateObj);
         const content = localStorage.getItem(key) || "";
         
         textArea.value = content;
@@ -295,42 +332,104 @@
         history.pushState({editorOpen: true}, ""); // Push state for back button support
     }
 
-    function closeEditor(goBack = true) {
-        // Save
+    function saveCurrentEntry() {
+        if (!editingKey) return;
         const val = textArea.value.trim();
         if (val) {
             localStorage.setItem(editingKey, textArea.value);
         } else {
             localStorage.removeItem(editingKey);
         }
-        
+    }
+
+    function closeEditor(goBack = true) {
+        saveCurrentEntry();
         editor.classList.remove('open');
         textArea.blur();
         renderGrid(); // Refresh view to show changes
-        
         if (goBack) history.back();
     }
 
-    // Color Picker Logic
-    colorPicker.addEventListener('change', (e) => {
-        const color = e.target.value;
-        const start = textArea.selectionStart;
-        const end = textArea.selectionEnd;
-        const text = textArea.value;
+    function navigateDay(delta) {
+        saveCurrentEntry();
+        currentEditingDate.setDate(currentEditingDate.getDate() + delta);
+        const newKey = getStorageKey(currentEditingDate.getFullYear(), currentEditingDate.getMonth()+1, currentEditingDate.getDate());
+        openEditor(currentEditingDate, newKey);
+    }
+
+    function navigateEntry(delta) {
+        saveCurrentEntry();
+        const keys = Object.keys(localStorage)
+            .filter(k => k.startsWith('D_'))
+            .sort();
         
-        // Logic: Insert hex at cursor. If at very start, it controls BG.
-        const before = text.substring(0, start);
-        const after = text.substring(end, text.length);
+        let index = delta > 0 
+            ? keys.findIndex(k => k > editingKey)
+            : keys.reverse().findIndex(k => k < editingKey);
+
+        if (index !== -1) {
+            const newKey = delta > 0 ? keys[index] : keys[index];
+            const parts = newKey.split('_')[1].split('-');
+            const nextDate = new Date(parts[0], parts[1]-1, parts[2]);
+            openEditor(nextDate, newKey);
+        }
+    }
+
+    // --- Modals ---
+
+    function openModal(id) {
+        document.getElementById(id).classList.add('open');
+        history.pushState({modalOpen: id}, "");
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+    }
+
+    // --- Data ---
+
+    function exportCSV() {
+        let csv = "Date,Content\n";
+        const keys = Object.keys(localStorage).filter(k => k.startsWith('D_')).sort();
+        keys.forEach(k => {
+            const date = k.replace('D_', '');
+            const content = localStorage.getItem(k).replace(/"/g, '""');
+            csv += `${date},"${content}"\n`;
+        });
         
-        // Add newline if not empty and not at start to ensure clean line
-        const prefix = (start > 0 && text[start-1] !== '\n') ? '\n' : '';
-        
-        textArea.value = before + prefix + color + after;
-        textArea.focus();
-    });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `diary_export_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+    }
+
+    function importCSV(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const lines = e.target.result.split('\n');
+            lines.slice(1).forEach(line => {
+                const firstComma = line.indexOf(',');
+                if (firstComma === -1) return;
+                const date = line.substring(0, firstComma).trim();
+                let content = line.substring(firstComma + 1).trim();
+                if (content.startsWith('"') && content.endsWith('"')) {
+                    content = content.substring(1, content.length - 1).replace(/""/g, '"');
+                }
+                if (date && content) {
+                    localStorage.setItem(`D_${date}`, content);
+                }
+            });
+            renderGrid();
+            alert('Import complete');
+        };
+        reader.readAsText(file);
+    }
 
     init();
-
 </script>
 </body>
 </html>
