@@ -1,4 +1,4 @@
-    let app, editor, textArea, dateLabel, colorPicker;
+    let app, editor, textArea, dateLabel, colorPicker, prevEntryBtn, nextEntryBtn, tooltip;
 
     let currentYear = new Date().getFullYear();
     let editingKey = null;
@@ -18,6 +18,14 @@
         textArea = document.getElementById('diary-text');
         dateLabel = document.getElementById('editor-date-label');
         colorPicker = document.getElementById('cell-color-picker');
+        prevEntryBtn = document.getElementById('prev-entry-btn');
+        nextEntryBtn = document.getElementById('next-entry-btn');
+        tooltip = document.getElementById('tooltip');
+
+        // Initialize settings
+        const tooltipPref = localStorage.getItem('setting_tooltip_enabled') !== 'false';
+        const tooltipCheckbox = document.getElementById('setting-tooltip-enabled');
+        if (tooltipCheckbox) tooltipCheckbox.checked = tooltipPref;
 
         renderGrid();
         window.addEventListener('resize', renderGrid); // Re-render to fix grid placements if aspect ratio flips
@@ -36,6 +44,57 @@
 
     function getStorageKey(y, m, d) {
         return `D_${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+
+    function showTooltip(e, key) {
+        if (localStorage.getItem('setting_tooltip_enabled') === 'false') return;
+        let content = localStorage.getItem(key);
+        if (!content) {
+            tooltip.classList.add('hidden');
+            return;
+        }
+
+        // Limit length to 
+        if (content.length > 600) {
+            content = content.substring(0, 600) + '...';
+        }
+
+        tooltip.textContent = content;
+        tooltip.classList.remove('hidden');
+        moveTooltip(e);
+    }
+
+    function moveTooltip(e) {
+        const offset = 15;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        // Horizontal positioning: if mouse is on the right half, show tooltip to the left
+        if (e.clientX > vw / 2) {
+            tooltip.style.left = 'auto';
+            tooltip.style.right = (vw - e.clientX + offset) + 'px';
+        } else {
+            tooltip.style.right = 'auto';
+            tooltip.style.left = (e.clientX + offset) + 'px';
+        }
+
+        // Vertical positioning: if mouse is on the bottom half, show tooltip above
+        if (e.clientY > vh / 2) {
+            tooltip.style.top = 'auto';
+            tooltip.style.bottom = (vh - e.clientY + offset) + 'px';
+        } else {
+            tooltip.style.bottom = 'auto';
+            tooltip.style.top = (e.clientY + offset) + 'px';
+        }
+    }
+
+    function hideTooltip() {
+        tooltip.classList.add('hidden');
+    }
+
+    function toggleTooltipSetting(enabled) {
+        localStorage.setItem('setting_tooltip_enabled', enabled);
+        if (!enabled) hideTooltip();
     }
 
     function renderGrid() {
@@ -77,6 +136,9 @@
     function fullRebuild(isPortrait) {
         app.innerHTML = '';
         document.getElementById('current-year-display').textContent = currentYear;
+
+    const now = new Date();
+    const todayKey = getStorageKey(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
         const cols = isPortrait ? 14 : 39;
         const rows = isPortrait ? 39 : 14;
@@ -188,11 +250,22 @@
                 if (checkSunday(m, d)) el.classList.add('sunday');
                 if (dateObj < todayStart) el.classList.add('past');
                 if (content) el.classList.add('has-content');
+                if (storageKey === todayKey) el.classList.add('today');
 
-                el.onclick = () => openEditor(dateObj, storageKey);
+                el.onclick = () => {
+                    hideTooltip();
+                    openEditor(dateObj, storageKey);
+                };
+                el.onmouseenter = (e) => showTooltip(e, storageKey);
+                el.onmousemove = (e) => moveTooltip(e);
+                el.onmouseleave = () => hideTooltip();
+
                 app.appendChild(el);
             }
         }
     }
 
-    init();
+    // Ensure initialization happens after all scripts are loaded and DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+        init();
+    });

@@ -10,6 +10,35 @@ function openEditor(dateObj, key) {
     colorPicker.value = color;
     dateLabel.innerText = dateObj.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     
+    // Update Prev/Next entry buttons based on existing entries
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('D_')).sort();
+    const currentIndex = keys.indexOf(key);
+    let prevKey, nextKey;
+
+    if (currentIndex !== -1) {
+        prevKey = keys[currentIndex - 1];
+        nextKey = keys[currentIndex + 1];
+    } else {
+        const nextIdx = keys.findIndex(k => k > key);
+        nextKey = keys[nextIdx];
+        prevKey = nextIdx === -1 ? keys[keys.length - 1] : keys[nextIdx - 1];
+    }
+
+    const setNavBtn = (btn, targetKey, isPrev) => {
+        if (targetKey) {
+            const parts = targetKey.split('_')[1].split('-');
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            const shortDate = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            btn.innerText = isPrev ? `⟪ ${shortDate}` : `${shortDate} ⟫`;
+            btn.classList.remove('hidden');
+        } else {
+            btn.classList.add('hidden');
+        }
+    };
+
+    setNavBtn(prevEntryBtn, prevKey, true);
+    setNavBtn(nextEntryBtn, nextKey, false);
+
     editor.classList.add('open');
     history.pushState({editorOpen: true}, ""); // Push state for back button support
 }
@@ -56,15 +85,19 @@ function navigateDay(delta) {
 function navigateEntry(delta) {
     saveCurrentEntry();
     const keys = Object.keys(localStorage).filter(k => k.startsWith('D_')).sort();
+    const currentIndex = keys.indexOf(editingKey);
+    let targetKey;
     
-    let index = delta > 0 
-        ? keys.findIndex(k => k > editingKey)
-        : keys.reverse().findIndex(k => k < editingKey);
+    if (currentIndex !== -1) {
+        targetKey = keys[currentIndex + delta];
+    } else {
+        const nextIdx = keys.findIndex(k => k > editingKey);
+        targetKey = delta > 0 ? keys[nextIdx] : (nextIdx === -1 ? keys[keys.length - 1] : keys[nextIdx - 1]);
+    }
 
-    if (index !== -1) {
-        const newKey = delta > 0 ? keys[index] : keys[index];
-        const parts = newKey.split('_')[1].split('-');
+    if (targetKey) {
+        const parts = targetKey.split('_')[1].split('-');
         const nextDate = new Date(parts[0], parts[1]-1, parts[2]);
-        openEditor(nextDate, newKey);
+        openEditor(nextDate, targetKey);
     }
 }

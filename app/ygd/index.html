@@ -48,8 +48,8 @@
     </div>
     <textarea id="diary-text" placeholder="Write your day..."></textarea>
     <div class="editor-nav-row">
-        <button onclick="navigateEntry(-1)" class="btn-text">⟪ Prev Entry</button>
-        <button onclick="navigateEntry(1)" class="btn-text">Next Entry ⟫</button>
+        <button id="prev-entry-btn" onclick="navigateEntry(-1)" class="btn-text">⟪ Prev Entry</button>
+        <button id="next-entry-btn" onclick="navigateEntry(1)" class="btn-text">Next Entry ⟫</button>
     </div>
 </div>
 
@@ -72,15 +72,31 @@
     </div>
     <div class="modal-body">
         <div class="settings-group">
+            <h3>Preferences</h3>
+            <div class="settings-actions">
+                <label class="setting-label">
+                    <input type="checkbox" id="setting-tooltip-enabled" onchange="toggleTooltipSetting(this.checked)">
+                    Show text previews on hover
+                </label>
+            </div>
+        </div>
+        <div class="settings-group">
             <h3>Data Management</h3>
             <p>Export your diary to a CSV file or import data from a previous backup.</p>
             <div class="settings-actions">
                 <button class="btn-text" onclick="exportCSV()">Export CSV</button>
                 <button class="btn-text" onclick="document.getElementById('import-file').click()">Import CSV</button>
                 <input type="file" id="import-file" class="hidden" accept=".csv" onchange="importCSV(this)">
+                
             </div>
+        </div>
+        <div class="settings-group">
+            <h3>Danger Zone</h3>
+            <p>Permanently delete all data from this device.</p>
+            <button class="btn-text btn-danger" onclick="clearAllData()">Delete All Data</button>
         </div>
     </div>
 </div>
+<div id="tooltip" class="tooltip hidden"></div>
 </body>
 </html>
