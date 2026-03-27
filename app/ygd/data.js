@@ -75,3 +75,32 @@ function clearAllData() {
         alert("All data has been cleared.");
     }
 }
+
+function fillRandomData() {
+    const lorem = "you are beautiful beast and i love you even if we don't know each other it's just feeling before thoughts".split(' ');
+
+    const allDays = [];
+    for (let m = 0; m < 12; m++) {
+        const days = new Date(currentYear, m + 1, 0).getDate();
+        for (let d = 1; d <= days; d++) {
+            allDays.push({ m: m + 1, d });
+        }
+    }
+
+    // Pick 15 unique random days
+    for (let i = 0; i < 15; i++) {
+        if (allDays.length === 0) break;
+        const idx = Math.floor(Math.random() * allDays.length);
+        const day = allDays.splice(idx, 1)[0];
+        
+        const count = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
+        const words = [];
+        for (let j = 0; j < count; j++) {
+            words.push(lorem[Math.floor(Math.random() * lorem.length)]);
+        }
+        
+        localStorage.setItem(getStorageKey(currentYear, day.m, day.d), words.join(' '));
+    }
+    renderGrid();
+    alert(`Debug: 15 random entries added to ${currentYear}.`);
+}

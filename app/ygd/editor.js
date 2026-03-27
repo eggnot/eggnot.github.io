@@ -29,10 +29,11 @@ function openEditor(dateObj, key) {
             const parts = targetKey.split('_')[1].split('-');
             const d = new Date(parts[0], parts[1] - 1, parts[2]);
             const shortDate = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            btn.innerText = isPrev ? `⟪ ${shortDate}` : `${shortDate} ⟫`;
-            btn.classList.remove('hidden');
+            btn.innerText = isPrev ? `⏮ ${shortDate}` : `${shortDate} ⏭`;
+            btn.disabled = false;
         } else {
-            btn.classList.add('hidden');
+            btn.innerText = isPrev ? `⏮ no entries` : `no entries ⏭`;
+            btn.disabled = true;
         }
     };
 
@@ -49,14 +50,22 @@ function saveCurrentEntry() {
     const color = colorPicker.value;
     const colorKey = editingKey.replace('D_', 'C_');
 
+    // Helper to check if color is "really close to white" (threshold > 250/255)
+    const isCloseToWhite = (hex) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return r > 250 && g > 250 && b > 250;
+    };
+
     if (val) {
         localStorage.setItem(editingKey, textArea.value);
     } else {
         localStorage.removeItem(editingKey);
     }
 
-    // Save color if it's not the default white
-    if (color && color.toLowerCase() !== '#ffffff') {
+    // Save color if it's not "close to white"
+    if (color && !isCloseToWhite(color)) {
         localStorage.setItem(colorKey, color);
     } else {
         localStorage.removeItem(colorKey);
@@ -69,10 +78,6 @@ function closeEditor(goBack = true) {
     textArea.blur();
     renderGrid(); // Refresh view to show changes
     if (goBack) history.back();
-}
-
-function clearColor() {
-    colorPicker.value = "#ffffff";
 }
 
 function navigateDay(delta) {

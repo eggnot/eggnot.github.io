@@ -1,8 +1,9 @@
-    let app, editor, textArea, dateLabel, colorPicker, prevEntryBtn, nextEntryBtn, tooltip;
+    let app, editor, textArea, dateLabel, colorPicker, prevEntryBtn, nextEntryBtn, tooltip, searchBar, clearSearchBtn;
 
     let currentYear = new Date().getFullYear();
     let editingKey = null;
     let currentEditingDate = null;
+    let searchTerm = "";
 
     let lastRenderedYear = null;
     let lastRenderedOrientation = null;
@@ -21,11 +22,8 @@
         prevEntryBtn = document.getElementById('prev-entry-btn');
         nextEntryBtn = document.getElementById('next-entry-btn');
         tooltip = document.getElementById('tooltip');
-
-        // Initialize settings
-        const tooltipPref = localStorage.getItem('setting_tooltip_enabled') !== 'false';
-        const tooltipCheckbox = document.getElementById('setting-tooltip-enabled');
-        if (tooltipCheckbox) tooltipCheckbox.checked = tooltipPref;
+        searchBar = document.getElementById('search-bar');
+        clearSearchBtn = document.getElementById('clear-search');
 
         renderGrid();
         window.addEventListener('resize', renderGrid); // Re-render to fix grid placements if aspect ratio flips
@@ -47,7 +45,6 @@
     }
 
     function showTooltip(e, key) {
-        if (localStorage.getItem('setting_tooltip_enabled') === 'false') return;
         let content = localStorage.getItem(key);
         if (!content) {
             tooltip.classList.add('hidden');
@@ -59,7 +56,14 @@
             content = content.substring(0, 600) + '...';
         }
 
-        tooltip.textContent = content;
+        if (searchTerm) {
+            const escaped = content.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            tooltip.innerHTML = escaped.replace(regex, '<mark>$1</mark>');
+        } else {
+            tooltip.textContent = content;
+        }
+
         tooltip.classList.remove('hidden');
         moveTooltip(e);
     }
@@ -92,9 +96,17 @@
         tooltip.classList.add('hidden');
     }
 
-    function toggleTooltipSetting(enabled) {
-        localStorage.setItem('setting_tooltip_enabled', enabled);
-        if (!enabled) hideTooltip();
+    function handleSearch(query) {
+        const trimmed = query.trim();
+        // Only update the active search term if input is longer than 2 characters
+        searchTerm = trimmed.length > 2 ? trimmed.toLowerCase() : "";
+
+        const foundAny = updateCellStates();
+
+        // Show the clear button if there is any text, but highlight the bar 
+        // only if a search is active (length > 2) and results were found.
+        clearSearchBtn.classList.toggle('hidden', query.length === 0);
+        searchBar.classList.toggle('search-found', !!(searchTerm && foundAny));
     }
 
     function renderGrid() {
@@ -112,10 +124,16 @@
         lastRenderedOrientation = isPortrait;
     }
 
+    function clearSearch() {
+        searchBar.value = "";
+        handleSearch("");
+    }
+
     function updateCellStates() {
         const now = new Date();
         const todayKey = getStorageKey(now.getFullYear(), now.getMonth()+1, now.getDate());
         const todayStart = new Date().setHours(0,0,0,0);
+        let foundAny = false;
 
         document.querySelectorAll('.day-cell').forEach(el => {
             const key = el.dataset.key;
@@ -128,9 +146,15 @@
             el.classList.toggle('today', key === todayKey);
             el.classList.toggle('past', dateObj < todayStart);
 
+            const isMatch = searchTerm && content.toLowerCase().includes(searchTerm);
+            el.classList.toggle('search-match', !!isMatch);
+            if (isMatch) foundAny = true;
+
             const dot = el.querySelector('.color-dot');
             if (dot) dot.style.backgroundColor = color || 'transparent';
         });
+
+        return foundAny;
     }
 
     function fullRebuild(isPortrait) {
@@ -250,6 +274,7 @@
                 if (checkSunday(m, d)) el.classList.add('sunday');
                 if (dateObj < todayStart) el.classList.add('past');
                 if (content) el.classList.add('has-content');
+                if (searchTerm && content.toLowerCase().includes(searchTerm)) el.classList.add('search-match');
                 if (storageKey === todayKey) el.classList.add('today');
 
                 el.onclick = () => {

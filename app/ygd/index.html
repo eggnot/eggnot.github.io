@@ -16,40 +16,47 @@
     <script src="editor.js" type="text/javascript" defer></script>
     <script src="ui.js" type="text/javascript" defer></script>
     <script src="data.js" type="text/javascript" defer></script>
+
 </head>
 <body>
 
 <nav class="nav">
+    <div class="search-container">
+        <input type="text" id="search-bar" placeholder="Search entries..." oninput="handleSearch(this.value)">
+        <button id="clear-search" class="hidden" onclick="clearSearch()">✕</button>
+    </div>
     <div class="nav-center">
-        <button class="nav-btn" onclick="changeYear(-1)">←</button>
-        <span id="current-year-display"></span>
-        <button class="nav-btn" onclick="changeYear(1)">→</button>
+        <button class="btn-icon" onclick="changeYear(-1)">⏴</button>
+        <span id="current-year-display" class="title"></span>
+        <button class="btn-icon" onclick="changeYear(1)">⏵</button>
     </div>
     <div>
-        <button class="nav-btn" onclick="openModal('settings-modal')">⚙</button>
-        <button class="nav-btn" onclick="openModal('help-modal')">ⓘ</button>
+        <button class="btn-icon" onclick="openModal('help-modal')">ⓘ</button>        
+        <button class="btn-icon" onclick="openModal('settings-modal')" style="font-weight: bold;">⚙</button>
     </div>
 </nav>
 
-<div id="app"></div>
+<div id="app">
+</div>
 
 <div id="editor" class="modal-window">
     <div class="modal-header">
-        <button onclick="navigateDay(-1)" class="btn-icon">←</button>
+        <button onclick="closeEditor()" class="btn-icon">←</button>
+
         <div class="date-header-group">
-            <span id="editor-date-label" class="date-label"></span>
-            <div class="color-block">
-                <input type="color" id="cell-color-picker" class="color-picker" title="Choose cell color">
-                <button onclick="clearColor()" class="btn-icon-small" title="Clear color">✕</button>
-            </div>
+            <button onclick="navigateDay(-1)" class="btn-icon">⏴</button>
+            <span id="editor-date-label"></span>
+            <button onclick="navigateDay(1)" class="btn-icon">⏵</button>
         </div>
-        <button onclick="navigateDay(1)" class="btn-icon">→</button>
-        <button onclick="closeEditor()" class="btn-icon">✕</button>
+        
+        <input type="color" id="cell-color-picker" class="color-picker" title="Choose cell color">
+
+        <!-- <button onclick="closeEditor()" class="btn-icon">✕</button> -->
     </div>
-    <textarea id="diary-text" placeholder="Write your day..."></textarea>
+    <textarea id="diary-text" placeholder="Write here..."></textarea>
     <div class="editor-nav-row">
-        <button id="prev-entry-btn" onclick="navigateEntry(-1)" class="btn-text">⟪ Prev Entry</button>
-        <button id="next-entry-btn" onclick="navigateEntry(1)" class="btn-text">Next Entry ⟫</button>
+        <button id="prev-entry-btn" onclick="navigateEntry(-1)" class="btn-text"></button>
+        <button id="next-entry-btn" onclick="navigateEntry(1)" class="btn-text"></button>
     </div>
 </div>
 
@@ -72,15 +79,6 @@
     </div>
     <div class="modal-body">
         <div class="settings-group">
-            <h3>Preferences</h3>
-            <div class="settings-actions">
-                <label class="setting-label">
-                    <input type="checkbox" id="setting-tooltip-enabled" onchange="toggleTooltipSetting(this.checked)">
-                    Show text previews on hover
-                </label>
-            </div>
-        </div>
-        <div class="settings-group">
             <h3>Data Management</h3>
             <p>Export your diary to a CSV file or import data from a previous backup.</p>
             <div class="settings-actions">
@@ -95,6 +93,12 @@
             <p>Permanently delete all data from this device.</p>
             <button class="btn-text btn-danger" onclick="clearAllData()">Delete All Data</button>
         </div>
+        <div class="settings-group">
+            <h3>Debug</h3>
+            <p>Generate random data for testing purposes (Current Year).</p>
+            <button class="btn-text" onclick="fillRandomData()">Fill 15 Random Days</button>
+        </div>        
+        
     </div>
 </div>
 <div id="tooltip" class="tooltip hidden"></div>
