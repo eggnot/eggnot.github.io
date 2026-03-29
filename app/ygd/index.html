@@ -8,7 +8,6 @@
     <meta name="apple-mobile-web-app-title" content="TimeUpward">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#f4f4f4">
-    <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
     <link rel="manifest" href="manifest.json">
 
     <title>Time goes upward</title>
@@ -122,7 +121,7 @@
         
         
         <div class="settings-group">
-            <h3>Sets tools</h3>
+            <h3>Sets</h3>
             <div class="settings-group set-aware">
                 <div class="setting-row">
                     <span>Current</span>
@@ -156,7 +155,7 @@
 
         <div class="settings-group">
             <h3>Data Management</h3>
-            <p>Export your diary to a CSV file or import data from a previous backup.</p>
+            <p>Export to a CSV file or import data from a previous backup.</p>
             <div class="settings-actions">
                 <button class="btn-text" onclick="exportCSV()">Export CSV</button>
                 <button class="btn-text" onclick="document.getElementById('import-file').click()">Import CSV</button>
@@ -164,22 +163,24 @@
                 
             </div>
         </div>
+
+        <div class="settings-group">
+            <h3>Debug</h3>
+            <p>Fill couple of randon days for the active set (Current Year).</p>
+            <button class="btn-text btn-set" onclick="fillRandomData()">I feel lucky</button>
+        </div>
+
         <div class="settings-group">
             <h3>Danger Zone</h3>
             <p>Permanently delete all data from this device.</p>
             <button class="btn-text btn-danger" onclick="clearAllData()">Delete All Data</button>
-        </div>
-        <div class="settings-group">
-            <h3>Debug</h3>
-            <p>Generate random data for the active set (Current Year).</p>
-            <button class="btn-text btn-set" onclick="fillRandomData()">Fill 15 Random Days</button>
         </div>        
         
     </div>
 </div>
 <div id="tooltip" class="tooltip hidden"></div>
     
-<!-- logic -->
+<!-- Scripts -->
     <script src="main.js" type="text/javascript" defer></script>
     <script src="grid.js" type="text/javascript" defer></script>
     <script src="state.js" type="text/javascript" defer></script>

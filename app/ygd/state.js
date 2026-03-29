@@ -1,4 +1,5 @@
 // --- Local Updates & Interaction Logic ---
+const TOOLTIP_MAX_LEN = 600;
 
 function updateCellStates() {
     const now = new Date();
@@ -6,22 +7,21 @@ function updateCellStates() {
     const todayStart = new Date().setHours(0, 0, 0, 0);
     let foundAny = false;
 
-    document.querySelectorAll('.day-cell').forEach(el => {
-        const key = el.dataset.key;
-        const dateObj = new Date(el.dataset.date);
+    document.querySelectorAll('.gc').forEach(el => {
+        const key = el.dataset.k;
+        const dateObj = parseKeyDate(key);
         const content = localStorage.getItem(key) || "";
-        const color = localStorage.getItem(key.replace('D_', 'C_'));
+        const color = localStorage.getItem(key.replace(KEY_PREFIX_CONTENT, KEY_PREFIX_COLOR));
 
-        el.classList.toggle('has-content', !!content);
-        el.classList.toggle('today', key === todayKey);
-        el.classList.toggle('past', dateObj < todayStart);
+        el.classList.toggle('hc', !!content);
+        el.classList.toggle('tdy', key === todayKey);
+        el.classList.toggle('pst', dateObj < todayStart);
 
         const isMatch = searchTerm && content.toLowerCase().includes(searchTerm);
-        el.classList.toggle('search-match', !!isMatch);
+        el.classList.toggle('sm', !!isMatch);
         if (isMatch) foundAny = true;
-
-        const dot = el.querySelector('.color-dot');
-        if (dot) dot.style.backgroundColor = color || 'transparent';
+        if (color) el.style.setProperty('--dot', color);
+        else el.style.removeProperty('--dot');
     });
     return foundAny;
 }
@@ -30,7 +30,7 @@ function handleSearch(query) {
     const trimmed = query.trim();
     searchTerm = trimmed.length > 2 ? trimmed.toLowerCase() : "";
     const foundAny = updateCellStates();
-    clearSearchBtn.classList.toggle('hidden', query.length === 0);
+    clearBtn.classList.toggle('hidden', query.length === 0);
     searchBar.classList.toggle('search-found', !!(searchTerm && foundAny));
 }
 
@@ -43,10 +43,12 @@ function showTooltip(e, key) {
     let content = localStorage.getItem(key);
     if (!content) return hideTooltip();
 
-    if (content.length > 600) content = content.substring(0, 600) + '...';
+    if (content.length > TOOLTIP_MAX_LEN) content = content.substring(0, TOOLTIP_MAX_LEN) + '...';
 
     if (searchTerm) {
-        const escaped = content.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
+        const escaped = content.replace(/[&<>"']/g, m => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[m]));
         const regex = new RegExp(`(${searchTerm})`, 'gi');
         tooltip.innerHTML = escaped.replace(regex, '<mark>$1</mark>');
     } else {

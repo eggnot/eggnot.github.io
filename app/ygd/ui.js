@@ -1,13 +1,13 @@
 // --- General UI Logic ---
 
 function changeYear(delta) {
-    currentYear += delta;
+    curYear += delta;
     renderGrid();
 }
 
 function openModal(id) {
     const modal = document.getElementById(id);
-    if (!modal.classList.contains('open')) lastFocusElement = document.activeElement;
+    if (!modal.classList.contains('open')) lastFocus = document.activeElement;
     modal.classList.add('open');
     const firstInput = modal.querySelector('button, input, textarea');
     if (firstInput) setTimeout(() => firstInput.focus(), 100);
@@ -16,7 +16,7 @@ function openModal(id) {
 
 function closeModal(id, goBack = true) {
     document.getElementById(id).classList.remove('open');
-    if (lastFocusElement) lastFocusElement.focus();
+    if (lastFocus) lastFocus.focus();
     if (goBack) history.back();
 }
 
@@ -24,44 +24,33 @@ function updateSetSelector() {
     const selectors = document.querySelectorAll('.set-selector-ui');
     if (selectors.length === 0) return;
 
-    // Use captured defaults instead of live computed styles to avoid leakage from the active set
-    const defaultColor = themeDefaults['--bg-content'] || '#d0ff8a';
-
     const optionsHtml = sets.map(s => {
-        const configKey = s === 'def' ? 'cfg_bg-content' : `SET:${s}:cfg_bg-content`;
-        const color = localStorage.getItem(configKey) || defaultColor;
-        const style = `style="background-color: ${color}; color: ${getContrastColor(color)};"`;
-        return `<option value="${s}" ${s === currentSet ? 'selected' : ''} ${style}>${s}</option>`;
+        return `<option value="${s}" ${s === curSet ? 'selected' : ''}>${s}</option>`;
     }).join('');
-
-    const currentKey = currentSet === 'def' ? 'cfg_bg-content' : `SET:${currentSet}:cfg_bg-content`;
-    const activeColor = localStorage.getItem(currentKey) || defaultColor;
-    const activeTextColor = getContrastColor(activeColor);
 
     selectors.forEach(sel => {
         sel.innerHTML = optionsHtml;
-        sel.style.backgroundColor = activeColor;
-        sel.style.color = activeTextColor;
     });
 
     const display = document.getElementById('current-set-display');
-    if (display) display.textContent = currentSet;
+    if (display) display.textContent = curSet;
     const deleteBtn = document.getElementById('delete-set-btn');
-    if (deleteBtn) deleteBtn.disabled = (currentSet === 'def');
+    if (deleteBtn) deleteBtn.disabled = (curSet === 'def');
 }
 
 function switchSet(name) {
     const isEditorOpen = editor.classList.contains('open');
     if (isEditorOpen) saveCurrentEntry();
 
-    currentSet = name;
-    localStorage.setItem('tgu_current_set', name);
+    curSet = name;
+    localStorage.setItem(STORAGE_KEY_CURRENT_SET, name);
     applySetSettings();
     renderGrid();
     updateSetSelector();
+    handleSearch(searchBar.value);
 
-    if (isEditorOpen && currentEditingDate) {
-        openEditor(currentEditingDate, getStorageKey(currentEditingDate.getFullYear(), currentEditingDate.getMonth() + 1, currentEditingDate.getDate()));
+    if (isEditorOpen && editDate) {
+        openEditor(editDate, getStorageKey(editDate.getFullYear(), editDate.getMonth() + 1, editDate.getDate()));
     }
 }
 
@@ -71,37 +60,36 @@ function addNewSet() {
     if (!name || sets.includes(name)) return alert("Invalid or duplicate name.");
     
     sets.push(name);
-    localStorage.setItem('tgu_sets', JSON.stringify(sets));
+    localStorage.setItem(STORAGE_KEY_SETS, JSON.stringify(sets));
     nameInput.value = '';
     switchSet(name);
 }
 
 function deleteCurrentSet() {
-    if (currentSet === 'def') return alert("Cannot delete the default set.");
-    if (!confirm(`Delete set "${currentSet}" and ALL its data?`)) return;
+    if (curSet === 'def') return alert("Cannot delete the default set.");
+    if (!confirm(`Delete set "${curSet}" and ALL its data?`)) return;
 
-    // Clean up storage
-    const prefix = `SET:${currentSet}:`;
+    const prefix = `${KEY_PREFIX_SET}${curSet}${KEY_PREFIX_SEP}`;
     Object.keys(localStorage).forEach(k => { if (k.startsWith(prefix)) localStorage.removeItem(k); });
 
-    sets = sets.filter(s => s !== currentSet);
-    localStorage.setItem('tgu_sets', JSON.stringify(sets));
+    sets = sets.filter(s => s !== curSet);
+    localStorage.setItem(STORAGE_KEY_SETS, JSON.stringify(sets));
     switchSet('def');
 }
 
 function toggleAnimation(enabled, save = true) {
     document.body.classList.toggle('animate-bg', enabled);
-    if (save) localStorage.setItem('tgu_global_bg_anim', enabled);
+    if (save) localStorage.setItem(STORAGE_KEY_BG_ANIM, enabled);
 }
 
 function updateFontSize(size, save = true) {
     document.documentElement.style.setProperty('--font-size', size + 'pt');
-    if (save) localStorage.setItem('tgu_global_font_size', size);
+    if (save) localStorage.setItem(STORAGE_KEY_FONT_SIZE, size);
 }
 
 function updateModalOpacity(val, save = true) {
     document.documentElement.style.setProperty('--modal-opacity', val);
-    if (save) localStorage.setItem('tgu_global_modal_opacity', val);
+    if (save) localStorage.setItem(STORAGE_KEY_MODAL_OPACITY, val);
 }
 
 function updateThemeColor(varName, value) {

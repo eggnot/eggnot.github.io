@@ -1,29 +1,66 @@
+const SW_FILENAME = 'sw.js';
+
+const KEY_PREFIX_CONTENT = 'D_';
+const KEY_PREFIX_COLOR = 'C_';
+const KEY_PREFIX_SET = 'SET:';
+const KEY_PREFIX_SEP = ':';
+
+const STORAGE_KEY_SETS = 'tgu_sets';
+const STORAGE_KEY_CURRENT_SET = 'tgu_current_set';
+const STORAGE_KEY_BG_ANIM = 'tgu_global_bg_anim';
+const STORAGE_KEY_FONT_SIZE = 'tgu_global_font_size';
+const STORAGE_KEY_MODAL_OPACITY = 'tgu_global_modal_opacity';
+
+const MONTHS_COUNT = 12;
+const DEFAULT_BG_COLOR = '#d0ff8a';
+const COLOR_WHITE_THRESHOLD = 250;
+
 // --- Global Utilities ---
 function getContrastColor(hex) {
     if (!hex) return '#000000';
-    // Handle both HEX and RGB strings (computed styles often return rgb())
-    const rgb = hex.match(/\d+/g);
-    const r = rgb ? parseInt(rgb[0]) : parseInt(hex.slice(1, 3), 16);
-    const g = rgb ? parseInt(rgb[1]) : parseInt(hex.slice(3, 5), 16);
-    const b = rgb ? parseInt(rgb[2]) : parseInt(hex.slice(5, 7), 16);
+    let r, g, b;
+    if (hex.startsWith('rgb')) {
+        const rgb = hex.match(/\d+/g);
+        r = parseInt(rgb[0]);
+        g = parseInt(rgb[1]);
+        b = parseInt(rgb[2]);
+    } else {
+        r = parseInt(hex.slice(1, 3), 16);
+        g = parseInt(hex.slice(3, 5), 16);
+        b = parseInt(hex.slice(5, 7), 16);
+    }
     return (r * 0.299 + g * 0.587 + b * 0.114) < 128 ? '#ffffff' : '#000000';
 }
 
+function isColorNearWhite(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return r > COLOR_WHITE_THRESHOLD && g >COLOR_WHITE_THRESHOLD && b > COLOR_WHITE_THRESHOLD;
+}
 
-    let app, editor, textArea, dateLabel, colorPicker, prevEntryBtn, nextEntryBtn, tooltip, searchBar, clearSearchBtn, lastFocusElement = null;
-    let themeDefaults = {};
+// Helper: Extract date from storage key (handles SET:name:D_YYYY-MM-DD format)
+function parseKeyDate(key) {
+    const cleanKey = key.replace(new RegExp(`^${KEY_PREFIX_SET}[^:]+:`), '');
+    const dateStr = cleanKey.substring(2); // Remove 'D_'
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, m - 1, d);
+}
 
-    let currentYear = new Date().getFullYear();
-    let editingKey = null;
-    let currentEditingDate = null;
-    let searchTerm = "";
+let app, editor, textArea, dateLabel, colorPicker, prevBtn, nextBtn, tooltip, searchBar, clearBtn, lastFocus = null;
+let themeDef = {};
 
-    let lastRenderedYear = null;
-    let lastRenderedOrientation = null;
-    let lastRenderedSet = null;
+let curYear = new Date().getFullYear();
+let editKey = null;
+let editDate = null;
+let searchTerm = "";
 
-    let currentSet = localStorage.getItem('tgu_current_set') || 'def';
-    let sets = JSON.parse(localStorage.getItem('tgu_sets') || '["def"]');
+let lastRenderYear = null;
+let lastRenderOrient = null;
+let lastRenderSet = null;
+
+let curSet = localStorage.getItem(STORAGE_KEY_CURRENT_SET) || 'def';
+let sets = JSON.parse(localStorage.getItem(STORAGE_KEY_SETS) || '["def"]');
 
     // --- Core Logic ---
 
@@ -33,40 +70,47 @@ function getContrastColor(hex) {
         textArea = document.getElementById('diary-text');
         dateLabel = document.getElementById('editor-date-label');
         colorPicker = document.getElementById('cell-color-picker');
-        prevEntryBtn = document.getElementById('prev-entry-btn');
-        nextEntryBtn = document.getElementById('next-entry-btn');
+        prevBtn = document.getElementById('prev-entry-btn');
+        nextBtn = document.getElementById('next-entry-btn');
         tooltip = document.getElementById('tooltip');
         searchBar = document.getElementById('search-bar');
-        clearSearchBtn = document.getElementById('clear-search');
+        clearBtn = document.getElementById('clear-search');
 
-        // Capture default theme colors from CSS before any overrides are applied
         ['--bg-content', '--primary', '--bg-tooltip'].forEach(v => {
-            themeDefaults[v] = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+            themeDef[v] = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
         });
 
-        document.documentElement.style.setProperty('--text-on-content', getContrastColor(themeDefaults['--bg-content']));
+        document.documentElement.style.setProperty('--text-on-content', getContrastColor(themeDef['--bg-content']));
 
-        // Initialize Spaces and Theme
-        if (!sets.includes(currentSet)) currentSet = 'def';
+        if (!sets.includes(curSet)) curSet = 'def';
         updateSetSelector();
         applyGlobalSettings();
         applySetSettings();
+        if (typeof applyUIContrast === 'function') applyUIContrast();
 
         renderGrid();
         window.addEventListener('resize', renderGrid); // Re-render to fix grid placements if aspect ratio flips
 
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
+            navigator.serviceWorker.register(SW_FILENAME).catch(() => {});
         }
 
         app.addEventListener('keydown', handleGridKeyDown);
         
+        // Allow navigating from search back to the grid
+        searchBar.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+                const firstCell = app.querySelector('.gc:not(.res)');
+                if (firstCell) { firstCell.focus(); e.preventDefault(); }
+            }
+        });
+
         // History API for Back Button
         window.onpopstate = (e) => {
             if (editor.classList.contains('open')) closeEditor(false);
-            const openModalEl = document.querySelector('.modal-window.open:not(#editor)');
-            if (openModalEl) closeModal(openModalEl.id, false);
+            const modal = document.querySelector('.modal-window.open:not(#editor)');
+            if (modal) closeModal(modal.id, false);
         };
 
         window.addEventListener('keydown', handleGlobalKey);
@@ -75,8 +119,8 @@ function getContrastColor(hex) {
     function handleGlobalKey(e) {
         if (e.key === "Escape") {
             if (editor.classList.contains('open')) { closeEditor(); return; }
-            const openModalEl = document.querySelector('.modal-window.open:not(#editor)');
-            if (openModalEl) closeModal(openModalEl.id);
+            const modal = document.querySelector('.modal-window.open:not(#editor)');
+            if (modal) closeModal(modal.id);
             return;
         }
 
@@ -99,41 +143,40 @@ function getContrastColor(hex) {
     }
 
     function getSetKey(key) {
-        return currentSet === 'def' ? key : `SET:${currentSet}:${key}`;
+        return curSet === 'def' ? key : `${KEY_PREFIX_SET}${curSet}${KEY_PREFIX_SEP}${key}`;
     }
 
     function getStorageKey(y, m, d) {
-        const base = `D_${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const base = `${KEY_PREFIX_CONTENT}${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         return getSetKey(base);
     }
 
     function getSetDataKeys() {
-        const prefix = currentSet === 'def' ? 'D_' : `SET:${currentSet}:D_`;
+        const prefix = curSet === 'def' ? KEY_PREFIX_CONTENT : `${KEY_PREFIX_SET}${curSet}${KEY_PREFIX_SEP}${KEY_PREFIX_CONTENT}`;
         return Object.keys(localStorage).filter(k => k.startsWith(prefix)).sort();
     }
 
     function applyGlobalSettings() {
         // Load Animation
-        const bgAnim = localStorage.getItem('tgu_global_bg_anim') !== 'false';
+        const bgAnim = localStorage.getItem(STORAGE_KEY_BG_ANIM) !== 'false';
         const animToggle = document.getElementById('bg-animation-toggle');
         if (animToggle) animToggle.checked = bgAnim;
         toggleAnimation(bgAnim, false);
 
         // Load Font Size
-        const fontSize = localStorage.getItem('tgu_global_font_size') || '16';
+        const fontSize = localStorage.getItem(STORAGE_KEY_FONT_SIZE) || '16';
         const fontInput = document.getElementById('cfg-font-size');
         if (fontInput) fontInput.value = fontSize;
         updateFontSize(fontSize, false);
 
         // Load Modal Transparency
-        const modalOpacity = localStorage.getItem('tgu_global_modal_opacity') || '1';
+        const modalOpacity = localStorage.getItem(STORAGE_KEY_MODAL_OPACITY) || '1';
         const opacityInput = document.getElementById('cfg-modal-opacity');
         if (opacityInput) opacityInput.value = modalOpacity;
         updateModalOpacity(modalOpacity, false);
     }
 
     function applySetSettings() {
-        // Load Theme Colors
         ['--bg-content', '--primary', '--bg-tooltip'].forEach(v => {
             const key = getSetKey('cfg_' + v.replace('--', ''));
             const saved = localStorage.getItem(key);
@@ -146,57 +189,67 @@ function getContrastColor(hex) {
             } else {
                 document.documentElement.style.removeProperty(v);
                 if (v === '--bg-content') {
-                    const contrast = getContrastColor(themeDefaults['--bg-content']);
+                    const contrast = getContrastColor(themeDef['--bg-content']);
                     document.documentElement.style.setProperty('--text-on-content', contrast);
                 }
             }
             const input = document.getElementById('cfg-' + v.replace('--', ''));
             if (input) input.value = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
         });
+        if (typeof applyUIContrast === 'function') applyUIContrast();
     }
 
     function handleGridKeyDown(e) {
         const active = document.activeElement;
-        if (!active || !active.classList.contains('day-cell')) return;
+        if (!active || !active.classList.contains('gc')) return;
 
-        const r = parseInt(active.dataset.r);
-        const c = parseInt(active.dataset.c);
-        let tr = r, tc = c;
+        let tr = parseInt(active.dataset.r);
+        let tc = parseInt(active.dataset.c);
 
-        switch (e.key) {
-            case 'ArrowUp': tr--; break;
-            case 'ArrowDown': tr++; break;
-            case 'ArrowLeft': tc--; break;
-            case 'ArrowRight': tc++; break;
-            case 'Enter':
-            case ' ':
-                active.click(); // This only triggers if not a residue cell per listener logic
-                e.preventDefault();
-                return;
-            default: return;
+        const dr = e.key === 'ArrowUp' ? -1 : (e.key === 'ArrowDown' ? 1 : 0);
+        const dc = e.key === 'ArrowLeft' ? -1 : (e.key === 'ArrowRight' ? 1 : 0);
+
+        if (dr === 0 && dc === 0) {
+            if (e.key === 'Enter' || e.key === ' ') { active.click(); e.preventDefault(); }
+            return;
         }
 
-        const target = app.querySelector(`.day-cell[data-r="${tr}"][data-c="${tc}"]`);
-        if (target) {
-            e.preventDefault();
-            target.focus();
+        e.preventDefault();
+        let target = null;
+
+        // Loop to skip residue cells (.res) until we hit a valid one or the grid edge
+        while (true) {
+            tr += dr; tc += dc;
+            const cand = app.querySelector(`.gc[data-r="${tr}"][data-c="${tc}"]`);
+            
+            if (!cand) {
+                // If moving UP out of grid, jump to search bar
+                if (dr === -1 && searchBar) searchBar.focus();
+                break;
+            }
+            
+            if (!cand.classList.contains('res')) {
+                target = cand;
+                break;
+            }
         }
+
+        if (target) target.focus();
     }
 
     function renderGrid() {
         const isPortrait = window.innerHeight > window.innerWidth;
         
-        // Only perform full DOM reconstruction if structural parameters (Year, Orientation, Set) changed
-        if (currentYear === lastRenderedYear && isPortrait === lastRenderedOrientation && currentSet === lastRenderedSet) {
+        if (curYear === lastRenderYear && isPortrait === lastRenderOrient && curSet === lastRenderSet) {
             updateCellStates();
             return;
         }
 
         fullRebuild(isPortrait);
         
-        lastRenderedYear = currentYear;
-        lastRenderedOrientation = isPortrait;
-        lastRenderedSet = currentSet;
+        lastRenderYear = curYear;
+        lastRenderOrient = isPortrait;
+        lastRenderSet = curSet;
     }
 
     // Ensure initialization happens after all scripts are loaded and DOM is ready

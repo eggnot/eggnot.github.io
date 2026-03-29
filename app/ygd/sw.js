@@ -1,4 +1,5 @@
 const CACHE_NAME = 'tgu-v1';
+
 const ASSETS = [
   'index.html',
   'main.css',

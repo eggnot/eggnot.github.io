@@ -2,19 +2,19 @@
 
 function exportCSV() {
     let csv = "Set,Date,Color,Content\n";
-    const entries = []; // Array of {s, d, c, t}
+    const entries = [];
 
     Object.keys(localStorage).forEach(k => {
         let set = 'def', key = k;
-        if (k.startsWith('SET:')) {
-            const parts = k.split(':');
+        if (k.startsWith(KEY_PREFIX_SET)) {
+            const parts = k.split(KEY_PREFIX_SEP);
             set = parts[1];
-            key = parts.slice(2).join(':');
+            key = parts.slice(2).join(KEY_PREFIX_SEP);
         }
         
-        if (key.startsWith('D_')) {
+        if (key.startsWith(KEY_PREFIX_CONTENT)) {
             const date = key.substring(2);
-            const color = localStorage.getItem(k.replace('D_', 'C_')) || "";
+            const color = localStorage.getItem(k.replace(KEY_PREFIX_CONTENT, KEY_PREFIX_COLOR)) || "";
             const content = (localStorage.getItem(k) || "").replace(/"/g, '""');
             entries.push({ set, date, color, content });
         }
@@ -28,7 +28,7 @@ function exportCSV() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `diary_export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `time_goes_upward_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 100);
 }
@@ -39,7 +39,6 @@ function importCSV(input) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const text = e.target.result;
-        // Regex for: Space,Date,Color,"Content"
         const regex = /^([^,\r\n]+),([^,\r\n]+),([^,\r\n]*),"((?:[^"]|"")*)"(?:\r?\n|$)/gm;
         let match;
         let count = 0;
@@ -50,17 +49,17 @@ function importCSV(input) {
             const color = match[3].trim();
             const content = match[4].replace(/""/g, '"');
 
-            if (space === "Set" || space === "Space") continue; // Skip CSV header
+            if (space === "Set" || space === "Space") continue;
 
             if (space && date) {
                 if (!sets.includes(space)) {
                     sets.push(space);
-                    localStorage.setItem('tgu_sets', JSON.stringify(sets));
+                    localStorage.setItem(STORAGE_KEY_SETS, JSON.stringify(sets));
                 }
-                const prefix = space === 'def' ? '' : `SET:${space}:`;
+                const prefix = space === 'def' ? '' : `${KEY_PREFIX_SET}${space}${KEY_PREFIX_SEP}`;
                 
-                const dKey = `${prefix}D_${date}`;
-                const cKey = `${prefix}C_${date}`;
+                const dKey = `${prefix}${KEY_PREFIX_CONTENT}${date}`;
+                const cKey = `${prefix}${KEY_PREFIX_COLOR}${date}`;
 
                 if (content) localStorage.setItem(dKey, content);
                 else localStorage.removeItem(dKey);
@@ -73,7 +72,7 @@ function importCSV(input) {
         }
         renderGrid();
         alert(`Import complete: ${count} entries processed.`);
-        input.value = ''; // Reset input to allow re-importing the same file
+        input.value = '';
     };
     reader.readAsText(file);
 }
@@ -88,16 +87,18 @@ function clearAllData() {
 function fillRandomData() {
     const lorem = "you are beautiful beast and i love you even if we don't know each other it's just feeling before thoughts".split(' ');
 
+    const numValues = 5;
+
     const allDays = [];
-    for (let m = 0; m < 12; m++) {
-        const days = new Date(currentYear, m + 1, 0).getDate();
+    for (let m = 0; m < MONTHS_COUNT; m++) {
+        const days = new Date(curYear, m + 1, 0).getDate();
         for (let d = 1; d <= days; d++) {
             allDays.push({ m: m + 1, d });
         }
     }
 
-    // Pick 15 unique random days
-    for (let i = 0; i < 15; i++) {
+
+    for (let i = 0; i < numValues; i++) {
         if (allDays.length === 0) break;
         const idx = Math.floor(Math.random() * allDays.length);
         const day = allDays.splice(idx, 1)[0];
@@ -108,8 +109,8 @@ function fillRandomData() {
             words.push(lorem[Math.floor(Math.random() * lorem.length)]);
         }
         
-        localStorage.setItem(getStorageKey(currentYear, day.m, day.d), words.join(' '));
+        localStorage.setItem(getStorageKey(curYear, day.m, day.d), words.join(' '));
     }
     renderGrid();
-    alert(`Debug: 15 random entries added to ${currentYear}.`);
+    alert(`Debug: ${numValues} random entries added to ${curYear}.`);
 }
