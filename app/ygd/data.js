@@ -1,19 +1,27 @@
 // --- Data Management (CSV Import/Export) ---
 
 function exportCSV() {
-    let csv = "Date,Color,Content\n";
-    // Collect all unique dates that have either text or a color assigned
-    const dates = new Set();
+    let csv = "Set,Date,Color,Content\n";
+    const entries = []; // Array of {s, d, c, t}
+
     Object.keys(localStorage).forEach(k => {
-        if (k.startsWith('D_') || k.startsWith('C_')) {
-            dates.add(k.substring(2));
+        let set = 'def', key = k;
+        if (k.startsWith('SET:')) {
+            const parts = k.split(':');
+            set = parts[1];
+            key = parts.slice(2).join(':');
+        }
+        
+        if (key.startsWith('D_')) {
+            const date = key.substring(2);
+            const color = localStorage.getItem(k.replace('D_', 'C_')) || "";
+            const content = (localStorage.getItem(k) || "").replace(/"/g, '""');
+            entries.push({ set, date, color, content });
         }
     });
 
-    Array.from(dates).sort().forEach(date => {
-        const color = localStorage.getItem(`C_${date}`) || "";
-        const content = (localStorage.getItem(`D_${date}`) || "").replace(/"/g, '""');
-        csv += `${date},${color},"${content}"\n`;
+    entries.sort((a,b) => (a.set + a.date).localeCompare(b.set + a.date)).forEach(e => {
+        csv += `${e.set},${e.date},${e.color},"${e.content}"\n`;
     });
     
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -31,22 +39,28 @@ function importCSV(input) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const text = e.target.result;
-        // Regex for: Date,Color,"Content"
-        // Handles multi-line content inside quotes and escaped quotes ("")
-        const regex = /^([^,\r\n]+),([^,\r\n]*),"((?:[^"]|"")*)"(?:\r?\n|$)/gm;
+        // Regex for: Space,Date,Color,"Content"
+        const regex = /^([^,\r\n]+),([^,\r\n]+),([^,\r\n]*),"((?:[^"]|"")*)"(?:\r?\n|$)/gm;
         let match;
         let count = 0;
 
         while ((match = regex.exec(text)) !== null) {
-            const date = match[1].trim();
-            const color = match[2].trim();
-            const content = match[3].replace(/""/g, '"');
+            const space = match[1].trim();
+            const date = match[2].trim();
+            const color = match[3].trim();
+            const content = match[4].replace(/""/g, '"');
 
-            if (date === "Date") continue; // Skip CSV header
+            if (space === "Set" || space === "Space") continue; // Skip CSV header
 
-            if (date) {
-                const dKey = `D_${date}`;
-                const cKey = `C_${date}`;
+            if (space && date) {
+                if (!sets.includes(space)) {
+                    sets.push(space);
+                    localStorage.setItem('tgu_sets', JSON.stringify(sets));
+                }
+                const prefix = space === 'def' ? '' : `SET:${space}:`;
+                
+                const dKey = `${prefix}D_${date}`;
+                const cKey = `${prefix}C_${date}`;
 
                 if (content) localStorage.setItem(dKey, content);
                 else localStorage.removeItem(dKey);
@@ -65,14 +79,9 @@ function importCSV(input) {
 }
 
 function clearAllData() {
-    if (confirm("Are you sure you want to delete ALL your diary entries and colors? This cannot be undone.")) {
-        Object.keys(localStorage).forEach(k => {
-            if (k.startsWith('D_') || k.startsWith('C_')) {
-                localStorage.removeItem(k);
-            }
-        });
-        renderGrid();
-        alert("All data has been cleared.");
+    if (confirm("Are you sure you want to delete ALL your diary entries, colors, and spaces? This cannot be undone.")) {
+        localStorage.clear();
+        location.reload();
     }
 }
 

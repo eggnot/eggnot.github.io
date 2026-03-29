@@ -1,6 +1,7 @@
 // --- Editor Logic & Navigation ---
 
 function openEditor(dateObj, key) {
+    if (!editor.classList.contains('open')) lastFocusElement = document.activeElement;
     editingKey = key;
     currentEditingDate = new Date(dateObj);
     const content = localStorage.getItem(key) || "";
@@ -8,10 +9,12 @@ function openEditor(dateObj, key) {
     
     textArea.value = content;
     colorPicker.value = color;
-    dateLabel.innerText = dateObj.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const fullDate = dateObj.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const shortDate = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    dateLabel.innerHTML = `<span class="full-date">${fullDate}</span><span class="short-date">${shortDate}</span>`;
     
     // Update Prev/Next entry buttons based on existing entries
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('D_')).sort();
+    const keys = getSetDataKeys();
     const currentIndex = keys.indexOf(key);
     let prevKey, nextKey;
 
@@ -24,24 +27,25 @@ function openEditor(dateObj, key) {
         prevKey = nextIdx === -1 ? keys[keys.length - 1] : keys[nextIdx - 1];
     }
 
-    const setNavBtn = (btn, targetKey, isPrev) => {
-        if (targetKey) {
-            const parts = targetKey.split('_')[1].split('-');
-            const d = new Date(parts[0], parts[1] - 1, parts[2]);
-            const shortDate = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            btn.innerText = isPrev ? `⏮ ${shortDate}` : `${shortDate} ⏭`;
-            btn.disabled = false;
-        } else {
-            btn.innerText = isPrev ? `⏮ no entries` : `no entries ⏭`;
-            btn.disabled = true;
-        }
-    };
-
-    setNavBtn(prevEntryBtn, prevKey, true);
-    setNavBtn(nextEntryBtn, nextKey, false);
+    updateNavButton(prevEntryBtn, prevKey, true);
+    updateNavButton(nextEntryBtn, nextKey, false);
 
     editor.classList.add('open');
+    setTimeout(() => textArea.focus(), 100);
     history.pushState({editorOpen: true}, ""); // Push state for back button support
+}
+
+function updateNavButton(btn, targetKey, isPrev) {
+    if (targetKey) {
+        const parts = targetKey.split('_')[1].split('-');
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        const shortDate = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        btn.innerText = isPrev ? `« ${shortDate}` : `${shortDate} »`;
+        btn.disabled = false;
+    } else {
+        btn.innerText = isPrev ? `« no entries` : `no entries »`;
+        btn.disabled = true;
+    }
 }
 
 function saveCurrentEntry() {
@@ -77,6 +81,7 @@ function closeEditor(goBack = true) {
     editor.classList.remove('open');
     textArea.blur();
     renderGrid(); // Refresh view to show changes
+    if (lastFocusElement) lastFocusElement.focus();
     if (goBack) history.back();
 }
 
@@ -89,7 +94,7 @@ function navigateDay(delta) {
 
 function navigateEntry(delta) {
     saveCurrentEntry();
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('D_')).sort();
+    const keys = getSetDataKeys();
     const currentIndex = keys.indexOf(editingKey);
     let targetKey;
     
